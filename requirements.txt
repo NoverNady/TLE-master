@@ -1,0 +1,14 @@
+python>=3.11
+discord.py>=2.4.0
+aiohttp
+aiofile
+aiosqlite
+beautifulsoup4
+lxml
+matplotlib
+seaborn
+Pillow
+pycairo
+firebase-admin
+pytz
+requests
