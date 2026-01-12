@@ -67,7 +67,7 @@ def setup():
     font_downloader.maybe_download()
 
 
-def main():
+async def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--nodb', action='store_true')
     args = parser.parse_args()
@@ -83,15 +83,27 @@ def main():
 
     setup()
     
+    # CRITICAL FIX: Initialize database BEFORE creating bot
+    # This prevents AttributeError when ban_check tries to access user_db
+    logging.info('Initializing database and cache...')
+    await cf_common.initialize(args.nodb)
+    logging.info('Database initialization complete')
+    
+    # Discord.py 2.0+ intents - explicitly enable required intents
     intents = discord.Intents.default()
     intents.members = True
-    intents.message_content = True
+    intents.message_content = True  # Required for reading message content
 
     class TLEBot(commands.Bot):
         async def setup_hook(self):
+            # Discord.py 2.0+ uses async cog loading
             cogs = [file.stem for file in Path('tle', 'cogs').glob('*.py')]
             for extension in cogs:
-                await self.load_extension(f'tle.cogs.{extension}')
+                try:
+                    await self.load_extension(f'tle.cogs.{extension}')
+                    logging.info(f'Loaded cog: {extension}')
+                except Exception as e:
+                    logging.error(f'Failed to load cog {extension}: {e}')
             logging.info(f'Cogs loaded: {", ".join(self.cogs)}')
 
     bot = TLEBot(command_prefix=commands.when_mentioned_or(';'), intents=intents)
@@ -102,6 +114,7 @@ def main():
         return True
     
     def ban_check(ctx):
+        # Database is now guaranteed to be initialized
         banned = cf_common.user_db.get_banned_user(ctx.author.id)
         if banned is None:
             return True
@@ -111,17 +124,19 @@ def main():
     bot.add_check(no_dm_check)
     bot.add_check(ban_check)
 
-    # cf_common.initialize needs to run first, so it must be set as the bot's
-    # on_ready event handler rather than an on_ready listener.
+    # Cache contests on ready
     @discord_common.on_ready_event_once(bot)
     async def init():
         clist_api.cache()
-        await cf_common.initialize(args.nodb)
         asyncio.create_task(discord_common.presence(bot))
 
     bot.add_listener(discord_common.bot_error_handler, name='on_command_error')
-    bot.run(token)
+    
+    # Start the bot
+    await bot.start(token)
 
 
 if __name__ == '__main__':
-    main()
+    # Use asyncio.run() for proper async entry point (Python 3.7+)
+    asyncio.run(main())
+

@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>وثيقة التصميم الفني - TLE Bot</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Tajawal:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="ri-robot-2-line"></i>
+                    <span>Title Limit Exceeded</span>
+                </div>
+                <div class="version-badge">v0.1.0</div>
+            </div>
+            
+            <ul class="nav-links">
+                <li><a href="#overview" class="active"><i class="ri-dashboard-line"></i> <span>نظرة عامة</span></a></li>
+                <li><a href="#tech-stack"><i class="ri-stack-line"></i> <span>التقنيات والأدوات</span></a></li>
+                <li><a href="#features"><i class="ri-function-line"></i> <span>المميزات</span></a></li>
+                <li><a href="#api"><i class="ri-server-line"></i> <span>واجهة التطبيقات</span></a></li>
+                <li><a href="#issues"><i class="ri-alert-line"></i> <span>المشاكل والقيود</span></a></li>
+                <li><a href="#plan"><i class="ri-roadmap-line"></i> <span>خطة التحديث</span></a></li>
+            </ul>
+
+            <div class="sidebar-footer">
+                <button id="theme-toggle" class="btn-icon">
+                    <i class="ri-moon-line"></i>
+                </button>
+                <span>الوضع الليلي</span>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="content">
+            <header class="content-header">
+                <div class="breadcrumb">
+                    <span>التوثيق</span>
+                    <i class="ri-arrow-left-s-line"></i>
+                    <span class="current">وثيقة التصميم الفني</span>
+                </div>
+                <div class="download-actions">
+                    <button class="btn btn-outline" onclick="window.print()">
+                        <i class="ri-printer-line"></i> طباعة / PDF
+                    </button>
+                    <a href="https://github.com/iampjeetsingh/TLE" target="_blank" class="btn btn-primary">
+                        <i class="ri-github-fill"></i> المستودع
+                    </a>
+                </div>
+            </header>
+
+            <div class="document-wrapper">
+                <h1 class="doc-title">وثيقة التصميم الفني (Technical Design Document)</h1>
+                <div class="doc-meta">
+                    <span class="badge badge-info">الحالة: مسودة</span>
+                    <span class="date"><i class="ri-calendar-line"></i> 12 يناير 2026</span>
+                    <span class="author"><i class="ri-user-line"></i> Antigravity Assistant</span>
+                </div>
+
+                <hr class="divider">
+
+                <section id="overview" class="section">
+                    <h2>1. نظرة عامة وبنية المشروع</h2>
+                    <div class="card">
+                        <h3>1.1 الغرض الأساسي</h3>
+                        <p>روبوت "TLE" هو أداة متخصصة لمنصة Discord تركز على البرمجة التنافسية (Competitive Programming)، وتحديداً منصة <strong>Codeforces</strong>. يهدف الروبوت إلى مساعدة المبرمجين على:</p>
+                        <ul class="feature-list">
+                            <li><i class="ri-calendar-event-line"></i> متابعة المسابقات (Contests) القادمة.</li>
+                            <li><i class="ri-bar-chart-line"></i> عرض إحصائيات الأداء والرسوم البيانية.</li>
+                            <li><i class="ri-sword-line"></i> إجراء مبارزات برمجية (Duels).</li>
+                            <li><i class="ri-notification-3-line"></i> إدارة تذكيرات المسابقات.</li>
+                        </ul>
+                    </div>
+
+                    <div class="card">
+                        <h3>1.2 البنية عالية المستوى</h3>
+                        <p>يعمل الروبوت كتطبيق Python غير متزامن (Asynchronous) يعتمد على مكتبة <code>discord.py</code>.</p>
+                        <div class="architecture-grid">
+                            <div class="arch-item">
+                                <div class="icon-box"><i class="ri-discord-fill"></i></div>
+                                <h4>Discord Interaction</h4>
+                                <p>WebSocket للأحداث (Events) و REST API للأوامر.</p>
+                            </div>
+                            <div class="arch-item">
+                                <div class="icon-box"><i class="ri-time-line"></i></div>
+                                <h4>Background Tasks</h4>
+                                <p>حلقات دورية لتحديث المسابقات والتحقق من التقديمات.</p>
+                            </div>
+                            <div class="arch-item">
+                                <div class="icon-box"><i class="ri-database-2-line"></i></div>
+                                <h4>State Management</h4>
+                                <p>SQLite محلي مع مزامنة سحابية عبر Firebase Storage.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="tech-stack" class="section">
+                    <h2>2. التقنيات والأدوات</h2>
+                    <div class="tech-grid">
+                        <div class="tech-card">
+                            <i class="ri-code-s-slash-line"></i>
+                            <h4>Python 3.8</h4>
+                            <p>اللغة الأساسية</p>
+                        </div>
+                        <div class="tech-card">
+                            <i class="ri-robot-line"></i>
+                            <h4>discord.py</h4>
+                            <p>إطار العمل (v1.x)</p>
+                        </div>
+                        <div class="tech-card">
+                            <i class="ri-global-line"></i>
+                            <h4>aiohttp</h4>
+                            <p>اتصال API</p>
+                        </div>
+                        <div class="tech-card">
+                            <i class="ri-line-chart-line"></i>
+                            <h4>Matplotlib</h4>
+                            <p>الرسوم البيانية</p>
+                        </div>
+                        <div class="tech-card">
+                            <i class="ri-database-line"></i>
+                            <h4>SQLite</h4>
+                            <p>قاعدة البيانات</p>
+                        </div>
+                        <div class="tech-card">
+                            <i class="ri-fire-line"></i>
+                            <h4>Firebase</h4>
+                            <p>النسخ الاحتياطي</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="features" class="section">
+                    <h2>3. تفاصيل المميزات</h2>
+                    <div class="table-responsive">
+                        <table class="styled-table">
+                            <thead>
+                                <tr>
+                                    <th>الوحدة (Cog)</th>
+                                    <th>الملف</th>
+                                    <th>الوظيفة</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Codeforces</td>
+                                    <td><code>codeforces.py</code></td>
+                                    <td>الربط بحسابات Codeforces وعرض الملفات الشخصية.</td>
+                                </tr>
+                                <tr>
+                                    <td>Contests</td>
+                                    <td><code>contests.py</code></td>
+                                    <td>جلب قائمة المسابقات وإدارة التذكيرات.</td>
+                                </tr>
+                                <tr>
+                                    <td>Graphs</td>
+                                    <td><code>graphs.py</code></td>
+                                    <td>إنشاء رسوم بيانية للأداء والتصنيف.</td>
+                                </tr>
+                                <tr>
+                                    <td>Duel</td>
+                                    <td><code>duel.py</code></td>
+                                    <td>نظام المبارزات وتتبع Elo الداخلي.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <section id="api" class="section">
+                    <h2>4. تكامل واجهة التطبيقات</h2>
+                    <div class="card warning-card">
+                        <div class="warning-icon"><i class="ri-shield-keyhole-line"></i></div>
+                        <div class="warning-content">
+                            <h3>قيود API والحماية</h3>
+                            <p>يستخدم المشروع <code>decorator</code> مخصص (<code>@cf_ratelimit</code>) لضمان عدم تجاوز حدود Codeforces (5 طلبات/ثانية). كما يدعم استخدام "Proxy" لتجنب حظر IP.</p>
+                        </div>
+                    </div>
+                    <div class="code-preview">
+                        <div class="code-header">
+                            <span>tle/util/codeforces_api.py</span>
+                        </div>
+                        <pre><code>@cf_ratelimit
+async def _query_api(path, data=None):
+    url = API_BASE_URL + path
+    # ... handling logic ...
+    async with _session.post(url, data=data) as resp:
+        # ...</code></pre>
+                    </div>
+                </section>
+
+                <section id="issues" class="section">
+                    <h2>5. المشاكل الحالية والقيود</h2>
+                    <div class="alert alert-danger">
+                        <i class="ri-alarm-warning-line"></i>
+                        <span><strong>تنبيه هام:</strong> المشروع يعتمد على تقنيات وصلت لنهاية الدعم (EOL).</span>
+                    </div>
+                    <ul class="issues-list">
+                        <li>
+                            <span class="status-dot danger"></span>
+                            <div>
+                                <strong>Python 3.8 & Docker Image</strong>
+                                <p>نسخ قديمة جداً تشكل خطراً أمنياً وتفتقد لتحسينات الأداء.</p>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="status-dot warning"></span>
+                            <div>
+                                <strong>discord.py 1.x</strong>
+                                <p>استخدام <code>bot.load_extension</code> المتزامن (deprecated in 2.0+).</p>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="status-dot warning"></span>
+                            <div>
+                                <strong>Intents</strong>
+                                <p>عدم وجود <code>Message Content Intent</code> قد يمنع قراءة الرسائل في التحديثات الجديدة.</p>
+                            </div>
+                        </li>
+                    </ul>
+                </section>
+
+                <section id="plan" class="section">
+                    <h2>6. خطة التحديث المقترحة (2026)</h2>
+                    <div class="timeline">
+                        <div class="timeline-item">
+                            <div class="timeline-number">01</div>
+                            <div class="timeline-content">
+                                <h3>ترقية البيئة الأساسية</h3>
+                                <p>الترقية إلى <strong>Python 3.11-slim</strong> واستخدام Docker Multi-stage builds لتقليل الحجم.</p>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-number">02</div>
+                            <div class="timeline-content">
+                                <h3>ترحيل الكود (Code Migration)</h3>
+                                <p>تحديث <code>discord.py</code> إلى v2.4+، تفعيل <code>async load_extension</code>، وإصلاح الـ Intents.</p>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-number">03</div>
+                            <div class="timeline-content">
+                                <h3>تحسين الأداء</h3>
+                                <p>استخدام <code>run_in_executor</code> للرسم البياني وتحديث استراتيجية التخزين المؤقت (Redis).</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+            
+            <footer class="main-footer">
+                <p>جميع الحقوق محفوظة &copy; 2026 - TLE Bot Documentation</p>
+            </footer>
+        </main>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

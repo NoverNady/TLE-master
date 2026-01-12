@@ -945,5 +945,5 @@ class Contests(commands.Cog):
 
 
 
-def setup(bot):
-    bot.add_cog(Contests(bot))
+async def setup(bot):
+    await bot.add_cog(Contests(bot))

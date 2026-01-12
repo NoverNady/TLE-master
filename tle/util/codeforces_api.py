@@ -319,8 +319,12 @@ class contest:
         params = {}
         if gym is not None:
             params['gym'] = _bool_to_str(gym)
-        resp = await _query_api('contest.list', params)
-        return [make_from_dict(Contest, contest_dict) for contest_dict in resp]
+        try:
+            resp = await _query_api('contest.list', params)
+            return [make_from_dict(Contest, contest_dict) for contest_dict in resp]
+        except (CodeforcesApiError, ClientError) as e:
+            logger.warning(f'contest.list API call failed: {e}. Returning empty list.')
+            return []
 
     @staticmethod
     async def ratingChanges(*, contest_id):
@@ -375,11 +379,15 @@ class problemset:
             params['tags'] = ';'.join(tags)
         if problemset_name is not None:
             params['problemsetName'] = problemset_name
-        resp = await _query_api('problemset.problems', params)
-        problems = [make_from_dict(Problem, problem_dict) for problem_dict in resp['problems']]
-        problemstats = [make_from_dict(ProblemStatistics, problemstat_dict) for problemstat_dict in
-                        resp['problemStatistics']]
-        return problems, problemstats
+        try:
+            resp = await _query_api('problemset.problems', params)
+            problems = [make_from_dict(Problem, problem_dict) for problem_dict in resp['problems']]
+            problemstats = [make_from_dict(ProblemStatistics, problemstat_dict) for problemstat_dict in
+                            resp['problemStatistics']]
+            return problems, problemstats
+        except (CodeforcesApiError, ClientError) as e:
+            logger.warning(f'problemset.problems API call failed: {e}. Returning empty lists.')
+            return [], []
 
 def user_info_chunkify(handles):
     """
@@ -455,15 +463,19 @@ class user:
 
     @staticmethod
     async def ratedList(*, activeOnly=None):
-        url = os.getenv('RATED_LIST_PROXY')
-        if url:
-            return await _query_proxy(url)
-        else:
-            params = {}
-            if activeOnly is not None:
-                params['activeOnly'] = _bool_to_str(activeOnly)
-            resp = await _query_api('user.ratedList', params)
-            return {user_dict['handle']: user_dict['rating'] for user_dict in resp}
+        try:
+            url = os.getenv('RATED_LIST_PROXY')
+            if url:
+                return await _query_proxy(url)
+            else:
+                params = {}
+                if activeOnly is not None:
+                    params['activeOnly'] = _bool_to_str(activeOnly)
+                resp = await _query_api('user.ratedList', params)
+                return {user_dict['handle']: user_dict['rating'] for user_dict in resp}
+        except (CodeforcesApiError, ClientError) as e:
+            logger.warning(f'user.ratedList API call failed: {e}. Returning empty dict.')
+            return {}
 
 
     @staticmethod

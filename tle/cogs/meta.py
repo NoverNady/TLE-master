@@ -112,5 +112,5 @@ class Meta(commands.Cog):
             await ctx.send('```' + 'Cache reset failed.' + '```')
 
 
-def setup(bot):
-    bot.add_cog(Meta(bot))
+async def setup(bot):
+    await bot.add_cog(Meta(bot))

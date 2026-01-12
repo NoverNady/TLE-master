@@ -15,6 +15,9 @@ The features of the bot are split into a number of cogs, each handling their own
 
 ### Other cogs
 
+- **Duel** Challenge other members to programming duels with ELO-based rating system. Track your duel statistics and compete for rankings.
+- **Reminders** Subscribe to contest reminders from various competitive programming platforms (Codeforces, CodeChef, AtCoder, etc.).
+- **Mentorship** Server setup automation with role creation, group management (G1-G20), and background tasks for tracking progress.
 - **Starboard** Commands related to the starboard, which adds messages to a specific channel when enough users react with a ⭐️.
 - **CacheControl** Commands related to data caching.
 

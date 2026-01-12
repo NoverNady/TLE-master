@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TLE Bot - التوثيق الشامل</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Tajawal:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-primary: #0d1117;
+            --bg-secondary: #161b22;
+            --bg-tertiary: #1f2937;
+            --accent: #58a6ff;
+            --accent-hover: #1f6feb;
+            --text-primary: #f0f6fc;
+            --text-secondary: #8b949e;
+            --border: #30363d;
+            --success: #3fb950;
+            --warning: #d29922;
+            --danger: #f85149;
+            --code-bg: #0d1117;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background: linear-gradient(135deg, #0d1117 0%, #1a1f2e 100%);
+            color: var(--text-primary);
+            line-height: 1.7;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* Header */
+        header {
+            background: rgba(22, 27, 34, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            padding: 1.5rem 0;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: var(--accent);
+        }
+
+        .logo i {
+            font-size: 2.5rem;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent);
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 4rem 0;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 900;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--accent) 0%, #a371f7 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin: 0 auto 2rem;
+        }
+
+        .hero-badges {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .badge-primary {
+            background: linear-gradient(135deg, var(--accent) 0%, #1f6feb 100%);
+            color: white;
+        }
+
+        .badge-outline {
+            border: 2px solid var(--border);
+            color: var(--text-primary);
+        }
+
+        /* Features Grid */
+        .features {
+            padding: 4rem 0;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 900;
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent), #a371f7);
+            margin: 1rem auto;
+            border-radius: 2px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .feature-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent), #a371f7);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent);
+            box-shadow: 0 20px 40px rgba(88, 166, 255, 0.1);
+        }
+
+        .feature-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            display: inline-block;
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--accent);
+        }
+
+        .feature-card p {
+            color: var(--text-secondary);
+            line-height: 1.8;
+        }
+
+        .feature-list {
+            list-style: none;
+            margin-top: 1rem;
+        }
+
+        .feature-list li {
+            padding: 0.5rem 0;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .feature-list li i {
+            color: var(--success);
+        }
+
+        /* Installation Section */
+        .installation {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 3rem;
+            margin: 4rem 0;
+        }
+
+        .step {
+            margin-bottom: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .step:last-child {
+            border-bottom: none;
+        }
+
+        .step-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: var(--accent);
+            color: white;
+            border-radius: 50%;
+            font-weight: 900;
+            margin-left: 1rem;
+        }
+
+        .step h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .code-block {
+            background: var(--code-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            position: relative;
+            direction: ltr;
+            text-align: left;
+        }
+
+        .code-block code {
+            font-family: 'Fira Code', monospace;
+            color: #79c0ff;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: 'Tajawal', sans-serif;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .copy-btn:hover {
+            background: var(--accent-hover);
+            transform: scale(1.05);
+        }
+
+        /* Commands Table */
+        .commands-section {
+            padding: 4rem 0;
+        }
+
+        .command-category {
+            margin-bottom: 3rem;
+        }
+
+        .category-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .category-icon {
+            font-size: 2rem;
+        }
+
+        .commands-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        .commands-table th {
+            background: var(--bg-tertiary);
+            padding: 1rem;
+            text-align: right;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .commands-table td {
+            padding: 1rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .commands-table tr:hover {
+            background: var(--bg-tertiary);
+        }
+
+        .cmd-name {
+            font-family: 'Fira Code', monospace;
+            color: var(--accent);
+            font-weight: 600;
+            direction: ltr;
+            text-align: left;
+        }
+
+        .role-badge {
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        .role-admin {
+            background: rgba(248, 81, 73, 0.2);
+            color: var(--danger);
+        }
+
+        .role-user {
+            background: rgba(63, 185, 80, 0.2);
+            color: var(--success);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border);
+            padding: 3rem 0;
+            margin-top: 4rem;
+            text-align: center;
+        }
+
+        footer p {
+            color: var(--text-secondary);
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            margin-top: 1rem;
+        }
+
+        .footer-links a {
+            color: var(--accent);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: var(--accent-hover);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-links {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="ri-robot-2-fill"></i>
+                    <span>TLE Bot</span>
+                </div>
+                <nav>
+                    <ul class="nav-links">
+                        <li><a href="#features"><i class="ri-star-line"></i> المميزات</a></li>
+                        <li><a href="#installation"><i class="ri-download-line"></i> التثبيت</a></li>
+                        <li><a href="#commands"><i class="ri-terminal-line"></i> الأوامر</a></li>
+                        <li><a href="https://github.com/cheran-senthil/TLE" target="_blank"><i class="ri-github-fill"></i> GitHub</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="container">
+                <h1>TLE Bot</h1>
+                <p>بوت Discord متخصص في البرمجة التنافسية - يدعم Codeforces و CodeChef و AtCoder والمزيد</p>
+                <div class="hero-badges">
+                    <span class="badge badge-primary"><i class="ri-python-line"></i> Python 3.7+</span>
+                    <span class="badge badge-outline"><i class="ri-discord-fill"></i> Discord.py</span>
+                    <span class="badge badge-outline"><i class="ri-open-source-line"></i> MIT License</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section id="features" class="features">
+            <div class="container">
+                <h2 class="section-title">المميزات الرئيسية</h2>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">🏆</div>
+                        <h3>نظام المسابقات</h3>
+                        <p>تتبع المسابقات القادمة والجارية من منصات متعددة</p>
+                        <ul class="feature-list">
+                            <li><i class="ri-check-line"></i> تذكيرات تلقائية</li>
+                            <li><i class="ri-check-line"></i> دعم 7+ منصات</li>
+                            <li><i class="ri-check-line"></i> مسابقات افتراضية</li>
+                            <li><i class="ri-check-line"></i> جداول الترتيب</li>
+                        </ul>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon">⚔️</div>
+                        <h3>نظام المبارزات</h3>
+                        <p>تحدى الأعضاء في مبارزات برمجية مع نظام ELO</p>
+                        <ul class="feature-list">
+                            <li><i class="ri-check-line"></i> تصنيف ELO داخلي</li>
+                            <li><i class="ri-check-line"></i> إحصائيات مفصلة</li>
+                            <li><i class="ri-check-line"></i> رسوم بيانية</li>
+                            <li><i class="ri-check-line"></i> سجل المبارزات</li>
+                        </ul>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon">📊</div>
+                        <h3>الرسوم البيانية</h3>
+                        <p>تصور تقدمك وأدائك بطريقة احترافية</p>
+                        <ul class="feature-list">
+                            <li><i class="ri-check-line"></i> تطور التصنيف</li>
+                            <li><i class="ri-check-line"></i> توزيع المسائل</li>
+                            <li><i class="ri-check-line"></i> مقارنات</li>
+                            <li><i class="ri-check-line"></i> إحصائيات الأداء</li>
+                        </ul>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon">🎓</div>
+                        <h3>نظام الإرشاد</h3>
+                        <p>إعداد السيرفر تلقائياً مع الرتب والمجموعات</p>
+                        <ul class="feature-list">
+                            <li><i class="ri-check-line"></i> رتب Codeforces (10)</li>
+                            <li><i class="ri-check-line"></i> رتب محلية (5)</li>
+                            <li><i class="ri-check-line"></i> مجموعات G1-G20</li>
+                            <li><i class="ri-check-line"></i> لوحة تحكم</li>
+                        </ul>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon">🔗</div>
+                        <h3>ربط الحسابات</h3>
+                        <p>ربط حساب Discord بحسابات المنصات</p>
+                        <ul class="feature-list">
+                            <li><i class="ri-check-line"></i> Codeforces</li>
+                            <li><i class="ri-check-line"></i> CodeChef</li>
+                            <li><i class="ri-check-line"></i> تحديث تلقائي للرتب</li>
+                            <li><i class="ri-check-line"></i> ملفات شخصية</li>
+                        </ul>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon">🔔</div>
+                        <h3>التذكيرات</h3>
+                        <p>تذكيرات قابلة للتخصيص قبل المسابقات</p>
+                        <ul class="feature-list">
+                            <li><i class="ri-check-line"></i> أوقات مخصصة</li>
+                            <li><i class="ri-check-line"></i> اختيار المنصات</li>
+                            <li><i class="ri-check-line"></i> دعم المناطق الزمنية</li>
+                            <li><i class="ri-check-line"></i> اشتراك سهل</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Installation Section -->
+        <section id="installation" class="container">
+            <div class="installation">
+                <h2 class="section-title">دليل التثبيت</h2>
+
+                <div class="step">
+                    <h3><span class="step-number">1</span> استنساخ المشروع</h3>
+                    <div class="code-block">
+                        <button class="copy-btn" onclick="copyCode(this)">نسخ</button>
+                        <code>git clone https://github.com/cheran-senthil/TLE
+cd TLE</code>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <h3><span class="step-number">2</span> تثبيت التبعيات</h3>
+                    <div class="code-block">
+                        <button class="copy-btn" onclick="copyCode(this)">نسخ</button>
+                        <code>poetry install</code>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <h3><span class="step-number">3</span> إعداد ملف البيئة</h3>
+                    <div class="code-block">
+                        <button class="copy-btn" onclick="copyCode(this)">نسخ</button>
+                        <code>cp environment.template environment
+# قم بتعديل ملف environment وإضافة:
+# BOT_TOKEN=your_token_here
+# LOGGING_COG_CHANNEL_ID=channel_id</code>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <h3><span class="step-number">4</span> تشغيل البوت</h3>
+                    <div class="code-block">
+                        <button class="copy-btn" onclick="copyCode(this)">نسخ</button>
+                        <code>./run.sh</code>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <h3><span class="step-number">5</span> الإعداد الأولي</h3>
+                    <div class="code-block">
+                        <button class="copy-btn" onclick="copyCode(this)">نسخ</button>
+                        <code>;setup_server
+;cache problemsets all
+;remind here @Role 10 60 180</code>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Commands Section -->
+        <section id="commands" class="commands-section">
+            <div class="container">
+                <h2 class="section-title">الأوامر الأساسية</h2>
+
+                <div class="command-category">
+                    <div class="category-header">
+                        <span class="category-icon">🎓</span>
+                        <h3>Mentorship & Setup</h3>
+                    </div>
+                    <table class="commands-table">
+                        <thead>
+                            <tr>
+                                <th>الأمر</th>
+                                <th>الوصف</th>
+                                <th>الصلاحية</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="cmd-name">;setup_server</td>
+                                <td>إعداد السيرفر تلقائياً (رتب + مجموعات)</td>
+                                <td><span class="role-badge role-admin">Admin</span></td>
+                            </tr>
+                            <tr>
+                                <td class="cmd-name">;debug_status</td>
+                                <td>فحص حالة API والمهام الخلفية</td>
+                                <td><span class="role-badge role-admin">Admin</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="command-category">
+                    <div class="category-header">
+                        <span class="category-icon">⚔️</span>
+                        <h3>Duels</h3>
+                    </div>
+                    <table class="commands-table">
+                        <thead>
+                            <tr>
+                                <th>الأمر</th>
+                                <th>الوصف</th>
+                                <th>الصلاحية</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="cmd-name">;duel selfregister</td>
+                                <td>التسجيل في نظام المبارزات</td>
+                                <td><span class="role-badge role-user">User</span></td>
+                            </tr>
+                            <tr>
+                                <td class="cmd-name">;duel challenge @user</td>
+                                <td>تحدي عضو في مبارزة</td>
+                                <td><span class="role-badge role-user">User</span></td>
+                            </tr>
+                            <tr>
+                                <td class="cmd-name">;duel accept</td>
+                                <td>قبول التحدي</td>
+                                <td><span class="role-badge role-user">User</span></td>
+                            </tr>
+                            <tr>
+                                <td class="cmd-name">;duel complete</td>
+                                <td>إنهاء المبارزة</td>
+                                <td><span class="role-badge role-user">User</span></td>
+                            </tr>
+                            <tr>
+                                <td class="cmd-name">;duel rating</td>
+                                <td>رسم بياني للتصنيف</td>
+                                <td><span class="role-badge role-user">User</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="command-category">
+                    <div class="category-header">
+                        <span class="category-icon">🏆</span>
+                        <h3>Contests</h3>
+                    </div>
+                    <table class="commands-table">
+                        <thead>
+                            <tr>
+                                <th>الأمر</th>
+                                <th>الوصف</th>
+                                <th>الصلاحية</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="cmd-name">;clist future</td>
+                                <td>المسابقات القادمة</td>
+                                <td><span class="role-badge role-user">User</span></td>
+                            </tr>
+                            <tr>
+                                <td class="cmd-name">;clist active</td>
+                                <td>المسابقات الجارية</td>
+                                <td><span class="role-badge role-user">User</span></td>
+                            </tr>
+                            <tr>
+                                <td class="cmd-name">;ranklist &lt;id&gt;</td>
+                                <td>جدول الترتيب</td>
+                                <td><span class="role-badge role-user">User</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="command-category">
+                    <div class="category-header">
+                        <span class="category-icon">🔔</span>
+                        <h3>Reminders</h3>
+                    </div>
+                    <table class="commands-table">
+                        <thead>
+                            <tr>
+                                <th>الأمر</th>
+                                <th>الوصف</th>
+                                <th>الصلاحية</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="cmd-name">;remind here @role 10 60</td>
+                                <td>إعداد التذكيرات</td>
+                                <td><span class="role-badge role-admin">Admin</span></td>
+                            </tr>
+                            <tr>
+                                <td class="cmd-name">;remind on</td>
+                                <td>الاشتراك في التذكيرات</td>
+                                <td><span class="role-badge role-user">User</span></td>
+                            </tr>
+                            <tr>
+                                <td class="cmd-name">;remind off</td>
+                                <td>إلغاء الاشتراك</td>
+                                <td><span class="role-badge role-user">User</span></td>
+                            </tr>
+                            <tr>
+                                <td class="cmd-name">;settz &lt;timezone&gt;</td>
+                                <td>تعيين المنطقة الزمنية</td>
+                                <td><span class="role-badge role-admin">Admin</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="command-category">
+                    <div class="category-header">
+                        <span class="category-icon">📊</span>
+                        <h3>Codeforces & Graphs</h3>
+                    </div>
+                    <table class="commands-table">
+                        <thead>
+                            <tr>
+                                <th>الأمر</th>
+                                <th>الوصف</th>
+                                <th>الصلاحية</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="cmd-name">;handle identify &lt;handle&gt;</td>
+                                <td>ربط حسابك بـ Codeforces</td>
+                                <td><span class="role-badge role-user">User</span></td>
+                            </tr>
+                            <tr>
+                                <td class="cmd-name">;gimme &lt;tags&gt; &lt;rating&gt;</td>
+                                <td>طلب مسألة عشوائية</td>
+                                <td><span class="role-badge role-user">User</span></td>
+                            </tr>
+                            <tr>
+                                <td class="cmd-name">;plot &lt;handles&gt;</td>
+                                <td>رسم بياني للتصنيف</td>
+                                <td><span class="role-badge role-user">User</span></td>
+                            </tr>
+                            <tr>
+                                <td class="cmd-name">;stalk &lt;handle&gt;</td>
+                                <td>آخر المسائل المحلولة</td>
+                                <td><span class="role-badge role-user">User</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>جميع الحقوق محفوظة © 2026 - TLE Bot Documentation</p>
+            <div class="footer-links">
+                <a href="https://github.com/cheran-senthil/TLE" target="_blank">GitHub</a>
+                <a href="https://codeforces.com" target="_blank">Codeforces</a>
+                <a href="https://discord.com" target="_blank">Discord</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function copyCode(btn) {
+            const codeBlock = btn.nextElementSibling;
+            const text = codeBlock.textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                btn.textContent = 'تم النسخ!';
+                setTimeout(() => {
+                    btn.textContent = 'نسخ';
+                }, 2000);
+            });
+        }
+
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
