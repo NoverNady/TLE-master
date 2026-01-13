@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TLE Bot - الدليل الرسمي الشامل المطور</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&family=Fira+Code:wght@400;500&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background: radial-gradient(circle at top right, #1a1a2e, #16213e, #0f3460);
+            color: #e2e8f0;
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(15, 15, 30, 0.9);
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+        }
+
+        header {
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            padding: 60px 20px;
+            text-align: center;
+            border-bottom: 4px solid rgba(168, 85, 247, 0.5);
+        }
+
+        h1 {
+            font-size: 3em;
+            font-weight: 700;
+            margin-bottom: 15px;
+            letter-spacing: -1px;
+            color: #fff;
+        }
+
+        .subtitle {
+            font-size: 1.25em;
+            opacity: 0.9;
+            max-width: 800px;
+            margin: 0 auto;
+            color: #e0e7ff;
+        }
+
+        .search-section {
+            padding: 50px 40px;
+            background: rgba(255, 255, 255, 0.02);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(30px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        #searchBar {
+            width: 100%;
+            padding: 20px 30px;
+            font-size: 1.1em;
+            border: 2px solid #6366f1;
+            border-radius: 16px;
+            background: #000;
+            color: #fff;
+            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.2);
+            transition: all 0.4s ease;
+        }
+
+        #searchBar:focus {
+            outline: none;
+            border-color: #ec4899;
+            box-shadow: 0 0 30px rgba(236, 72, 153, 0.3);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 30px;
+            padding: 40px;
+        }
+
+        .category-card {
+            background: rgba(30, 41, 59, 0.5);
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            height: fit-content;
+        }
+
+        .category-card:hover {
+            transform: translateY(-8px);
+            background: rgba(30, 41, 59, 0.8);
+            border-color: #6366f1;
+        }
+
+        .cat-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid rgba(99, 102, 241, 0.3);
+        }
+
+        .cat-icon {
+            font-size: 2.2em;
+            margin-left: 15px;
+            filter: drop-shadow(0 0 10px rgba(99, 102, 241, 0.5));
+        }
+
+        .cat-title {
+            font-size: 1.7em;
+            font-weight: 700;
+            color: #818cf8;
+        }
+
+        .cmd-item {
+            background: rgba(15, 17, 26, 0.7);
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            border-right: 4px solid #a855f7;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cmd-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 4px;
+            height: 100%;
+            background: #6366f1;
+            opacity: 0.3;
+        }
+
+        .cmd-name {
+            font-family: 'Fira Code', monospace;
+            font-size: 1.15em;
+            color: #d8b4fe;
+            font-weight: 600;
+            direction: ltr;
+            text-align: left;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .cmd-desc {
+            font-size: 0.95em;
+            color: #94a3b8;
+            line-height: 1.6;
+        }
+
+        .badge {
+            font-size: 0.7em;
+            padding: 4px 10px;
+            border-radius: 6px;
+            margin-right: 6px;
+            font-weight: bold;
+            position: absolute;
+            top: 15px;
+            left: 15px;
+        }
+
+        .badge-admin {
+            background: #ef4444;
+            color: #fff;
+        }
+
+        .badge-owner {
+            background: #6366f1;
+            color: #fff;
+        }
+
+        .badge-hidden {
+            background: #475569;
+            color: #fff;
+        }
+
+        footer {
+            padding: 60px;
+            text-align: center;
+            color: #64748b;
+            font-size: 0.9em;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        @media (max-width: 900px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 2.2em;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>🤖 TLE Bot - المرجع الشامل</h1>
+            <p class="subtitle">كل ما تحتاجه للتحكم في البوت الأقوى للمنافسات البرمجية، مشروحاً باللغة العربية مع كافة
+                تفاصيل الأوامر.</p>
+        </header>
+
+        <div class="search-section">
+            <input type="text" id="searchBar" placeholder="🔍 ابحث عن أي أمر (مثلاً: duel, plot, gitgud)..."
+                autocomplete="off">
+        </div>
+
+        <div class="grid" id="mainGrid">
+
+            <!-- Codeforces -->
+            <div class="category-card">
+                <div class="cat-header">
+                    <span class="cat-icon">💻</span>
+                    <h2 class="cat-title">Codeforces</h2>
+                </div>
+                <div class="cmd-item">
+                    <span class="cmd-name">;gitgud [delta]</span>
+                    <p class="cmd-desc">طلب مسألة مخصصة لرفع مستواك. الدلتا تتحكم في صعوبة المسألة.</p>
+                </div>
+                <div class="cmd-item">
+                    <span class="cmd-name">;gotgud</span>
+                    <p class="cmd-desc">أنهِ التحدي الحالي واحصل على نقاط التقييم.</p>
+                </div>
+                <div class="cmd-item">
+                    <span class="cmd-name">;upsolve [choice]</span>
+                    <p class="cmd-desc">الحصول على مسائل لم تحلها من مسابقات سابقة شاركت فيها.</p>
+                </div>
+                <div class="cmd-item">
+                    <span class="cmd-name">;stalk [handle]</span>
+                    <p class="cmd-desc">عرض تفصيلي لآخر مسائل قام المستخدم بحلها.</p>
+                </div>
+                <div class="cmd-item">
+                    <span class="cmd-name">;mashup [handles...]</span>
+                    <p class="cmd-desc">توليد مسابقة Mashup مخصصة لمجموعة من الأعضاء.</p>
+                </div>
+                <div class="cmd-item">
+                    <span class="cmd-name">;teamrate [handles...]</span>
+                    <p class="cmd-desc">حساب التقييم المتوقع لفريق مكون من عدة أشخاص.</p>
+                </div>
+            </div>
+
+            <!-- Duels -->
+            <div class="category-card">
+                <div class="cat-header">
+                    <span class="cat-icon">⚔️</span>
+                    <h2 class="cat-title">المبارزات (Duels)</h2>
+                </div>
+                <div class="cmd-item">
+                    <span class="cmd-name">;duel challenge @opponent [rating]</span>
+                    <p class="cmd-desc">تحدي شخص في مبارزة سريعة 1 ضد 1.</p>
+                </div>
+                <div class="cmd-item">
+                    <span class="cmd-name">;duel accept</span>
+                    <p class="cmd-desc">قبول تحدي مبارزة قائم.</p>
+                </div>
+                <div class="cmd-item">
+                    <span class="cmd-name">;duel complete</span>
+                    <p class="cmd-desc">إنهاء المبارزة وإعلان الفائز بعد التحقق من الحل.</p>
+                </div>
+                <div class="cmd-item">
+                    <span class="cmd-name">;duel profile [@user]</span>
+                    <p class="cmd-desc">مشاهدة إحصائياتك وتقييمك في نظام المبارزات.</p>
+                </div>
+                <div class="cmd-item">
+                    <span class="cmd-name">;duel ranklist</span>
+                    <p class="cmd-desc">ترتيب السيرفر لأفضل المبارزين (أساطير المبارزة).</p>
+                </div>
+                <div class="cmd-item">
+                    <span class="cmd-name">;duel history [@user]</span>
+                    <p class="cmd-desc">عرض تاريخ المبارزات الماضي بالكامل.</p>
+                </div>
+            </div>
+
+            <!-- Graphs & Plotting -->
+            <div class="category-card">
+                <div class="cat-header">
+                    <span class="cat-icon">📊</span>
+                    <h2 class="cat-title">الرسوم البيانية</h2>
+                </div>
+                <div class="cmd-item">
+                    <span class="cmd-name">;plot rating [handles]</span>
+                    <p class="cmd-desc">منحنى تطور التقييم على كود فورسيز.</p>
+                </div>
+                <div class="cmd-item">
+                    <span class="cmd-name">;plot solved [handle]</span>
+                    <p class="cmd-desc">توزيع المسائل المحلولة حسب الصعوبة والتاغات.</p>
+                </div>
+                <div class="cmd-item">
+                    <span class="cmd-name">;plot performance [handle]</span>
+                    <p class="cmd-desc">توضيح مستوى الأداء في كل مسابقة مقارنة بالآخرين.</p>
+                </div>
+                <div class="cmd-item">
+                    <span class="cmd-name">;plot distrib</span>
+                    <p class="cmd-desc">توزيع الأعضاء في السيرفر حسب رتبهم البرمجية.</p>
+                </div>
+                <div class="cmd-item">
+                    <span class="cmd-name">;plot scatter [handle]</span>
+                    <p class="cmd-desc">توضيح سرعة الحل مقابل الصعوبة لكل المسائل.</p>
+                </div>
+                <div class="cmd-item">
+                    <span class="cmd-name">;plot visualrank [id]</span>
+                    <p class="cmd-desc">تمثيل مرئي لترتيب المسابقة مع إبراز أعضاء السيرفر.</p>
+                </div>
+            </div>
+
+            <!-- Membership -->
+            <div class="category-card">
+                <div class="cat-header">
+                    <span class="cat-icon">👤</span>
+                    <h2 class="cat-title">إدارة الحسابات</h2>
+                </div>
+                <div class="cmd-item">
+                    <span class="cmd-name">;handle identify [handle]</span>
+                    <p class="cmd-desc">ربط حسابك في كود فورسيز أو أت كودار بهويتك في الديسكورد.</p>
+                </div>
+                <div class="cmd-item">
+                    <span class="cmd-name">;handle pretty [resource]</span>
+                    <p class="cmd-desc">عرض جميل للـ Handles المربوطة بالألوان الرسمية.</p>
+                </div>
+                <div class="cmd-item">
+                    <span class="cmd-name">;handle list</span>
+                    <p class="cmd-desc">قائمة بجميع المشتركين المربوطين في السيرفر.</p>
+                </div>
+                <div class="cmd-item">
+                    <span class="cmd-name">;handle status [member]</span>
+                    <p class="cmd-desc">تحديث رتب الديسكورد يدوياً لهذا المستخدم.</p>
+                </div>
+            </div>
+
+            <!-- Lists -->
+            <div class="category-card">
+                <div class="cat-header">
+                    <span class="cat-icon">📝</span>
+                    <h2 class="cat-title">إدارة القوائم</h2>
+                </div>
+                <div class="cmd-item">
+                    <span class="cmd-name">;list create [name]</span>
+                    <span class="badge badge-admin">ADMIN</span>
+                    <p class="cmd-desc">إنشاء قائمة مخصصة لجمع حسابات معينة.</p>
+                </div>
+                <div class="cmd-item">
+                    <span class="cmd-name">;list add [name] [res] [handles]</span>
+                    <p class="cmd-desc">إضافة حسابات إلى قائمة موجودة مسبقاً.</p>
+                </div>
+                <div class="cmd-item">
+                    <span class="cmd-name">;list view [name] [res]</span>
+                    <p class="cmd-desc">عرض إحصائيات التقييم لجميع المشتركين في القائمة.</p>
+                </div>
+                <div class="cmd-item">
+                    <span class="cmd-name">;list all</span>
+                    <p class="cmd-desc">عرض أسماء جميع القوائم المتوفرة في السيرفر.</p>
+                </div>
+            </div>
+
+            <!-- Reminders -->
+            <div class="category-card">
+                <div class="cat-header">
+                    <span class="cat-icon">🔔</span>
+                    <h2 class="cat-title">التذكيرات</h2>
+                </div>
+                <div class="cmd-item">
+                    <span class="cmd-name">;remind on | off</span>
+                    <p class="cmd-desc">تفعيل أو تعطيل التذكيرات التلقائية للمسابقات.</p>
+                </div>
+                <div class="cmd-item">
+                    <span class="cmd-name">;remind subscribe</span>
+                    <p class="cmd-desc">اختيار المنصات التي تود الحصول على تنبيهات لها.</p>
+                </div>
+                <div class="cmd-item">
+                    <span class="cmd-name">;remind settz [offset]</span>
+                    <p class="cmd-desc">تحديد منطقتك الزمنية لضمان دقة مواعيد التنبيهات.</p>
+                </div>
+                <div class="cmd-item">
+                    <span class="cmd-name">;remind settings</span>
+                    <p class="cmd-desc">عرض تفضيلات التذكير الحالية الخاصة بك.</p>
+                </div>
+            </div>
+
+            <!-- Automation & Admin -->
+            <div class="category-card">
+                <div class="cat-header">
+                    <span class="cat-icon">🛡️</span>
+                    <h2 class="cat-title">الإشراف والأتمتة</h2>
+                </div>
+                <div class="cmd-item">
+                    <span class="cmd-name">;setup_auto [#channel]</span>
+                    <span class="badge badge-admin">ADMIN</span>
+                    <p class="cmd-desc">تعيين قناة لنشر ترتيب السيرفر أسبوعياً وشهرياً.</p>
+                </div>
+                <div class="cmd-item">
+                    <span class="cmd-name">;cache update all</span>
+                    <span class="badge badge-admin">ADMIN</span>
+                    <p class="cmd-desc">تحديث كاش البوت (المسائل والمسابقات) يدوياً.</p>
+                </div>
+                <div class="cmd-item">
+                    <span class="cmd-name">;starboard here</span>
+                    <span class="badge badge-admin">ADMIN</span>
+                    <p class="cmd-desc">تحويل القناة الحالية إلى Starboard لحفظ الرسائل المميزة.</p>
+                </div>
+                <div class="cmd-item">
+                    <span class="cmd-name">;roleupdate auto on|off</span>
+                    <span class="badge badge-admin">ADMIN</span>
+                    <p class="cmd-desc">تفعيل نظام تحديث الرتب التلقائي عند تغير التقييم.</p>
+                </div>
+            </div>
+
+            <!-- Meta & Info -->
+            <div class="category-card">
+                <div class="cat-header">
+                    <span class="cat-icon">ℹ️</span>
+                    <h2 class="cat-title">النظام والمعلومات</h2>
+                </div>
+                <div class="cmd-item">
+                    <span class="cmd-name">;meta ping</span>
+                    <p class="cmd-desc">فحص استجابة البوت مع الديسكورد وسرعة الربط مع API.</p>
+                </div>
+                <div class="cmd-item">
+                    <span class="cmd-name">;meta uptime</span>
+                    <p class="cmd-desc">الزمن الكلي الذي قضاه البوت قيد التشغيل دون توقف.</p>
+                </div>
+                <div class="cmd-item">
+                    <span class="cmd-name">;meta help_arabic</span>
+                    <p class="cmd-desc">إرشاد المستخدمين إلى هذا الدليل العربي الشامل.</p>
+                </div>
+                <div class="cmd-item">
+                    <span class="cmd-name">;meta restart</span>
+                    <span class="badge badge-owner">OWNER</span>
+                    <p class="cmd-desc">إعادة تشغيل البوت (للمالك فقط).</p>
+                </div>
+            </div>
+
+        </div>
+
+        <footer>
+            <p>TLE Bot Official Documentation &copy; 2026 - Crafted for competitive programming communities</p>
+            </header>
+    </div>
+
+    <script>
+        const searchBar = document.getElementById('searchBar');
+        const cards = document.querySelectorAll('.category-card');
+
+        searchBar.addEventListener('input', (e) => {
+            const term = e.target.value.toLowerCase();
+            cards.forEach(card => {
+                let cardVisible = false;
+                const items = card.querySelectorAll('.cmd-item');
+                const catTitle = card.querySelector('.cat-title').innerText.toLowerCase();
+
+                if (catTitle.includes(term)) cardVisible = true;
+
+                items.forEach(item => {
+                    if (item.innerText.toLowerCase().includes(term)) {
+                        item.style.display = 'block';
+                        cardVisible = true;
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+                card.style.display = cardVisible ? 'block' : 'none';
+            });
+        });
+    </script>
+</body>
+
+</html>

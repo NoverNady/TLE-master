@@ -54,6 +54,11 @@ class Meta(commands.Cog):
         """Command the bot or get information about the bot."""
         await ctx.send_help(ctx.command)
 
+    @commands.command(brief='الدليل الكامل للأوامر بالعربية')
+    async def help_arabic(self, ctx):
+        """عرض رابط أو معلومة عن دليل الأوامر العربي"""
+        await ctx.send("✅ تم تحديث دليل الأوامر باللغة العربية! يمكنك العثور على الملف الشامل في مجلد البوت الرئيسي باسم `commands.html`. افتحه في أي متصفح لعرض جميع الأوامر والوظائف بالتفصيل.")
+
     @meta.command(brief='Restarts TLE')
     @commands.is_owner()
     async def restart(self, ctx):

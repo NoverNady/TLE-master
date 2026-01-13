@@ -15,9 +15,11 @@ logger = logging.getLogger(__name__)
 class Mentorship(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.update_scores_loop.start()
-        self.weekly_report_task.start()
-        self.monthly_report_task.start()
+        # tasks disabled as they are non-functional or replaced by automation.py
+        # self.update_scores_loop.start()
+        # self.weekly_report_task.start()
+        # self.monthly_report_task.start()
+        pass
 
     @commands.command(hidden=True)
     @commands.has_permissions(administrator=True)
