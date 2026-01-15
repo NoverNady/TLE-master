@@ -272,6 +272,40 @@ class UserDbConn:
             )
         ''')
 
+        # NEW: Gamified Community System Tables
+        self.conn.execute('''
+            CREATE TABLE IF NOT EXISTS gamification_points (
+                user_id TEXT,
+                guild_id TEXT,
+                current_month_points INTEGER DEFAULT 1500,
+                last_submission_id INTEGER DEFAULT 0,
+                PRIMARY KEY (user_id, guild_id)
+            )
+        ''')
+
+        self.conn.execute('''
+            CREATE TABLE IF NOT EXISTS automation_settings_v2 (
+                guild_id TEXT,
+                channel_id TEXT,
+                setting_type TEXT, -- 'weekly' or 'master'
+                role_name TEXT,    -- Used for weekly standings
+                PRIMARY KEY (guild_id, setting_type)
+            )
+        ''')
+
+        # Advanced duel data for multi-problem challenges
+        self.conn.execute('''
+            CREATE TABLE IF NOT EXISTS advanced_duel_data (
+                duel_id INTEGER PRIMARY KEY,
+                problem_names TEXT,
+                wa_counts_challenger TEXT,
+                wa_counts_challengee TEXT,
+                challenger_completed INTEGER DEFAULT 0,
+                challengee_completed INTEGER DEFAULT 0,
+                FOREIGN KEY (duel_id) REFERENCES duel(id)
+            )
+        ''')
+
 
     # Helper functions.
 

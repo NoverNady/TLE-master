@@ -3,6 +3,7 @@ from discord.ext import commands, tasks
 import logging
 import datetime
 import pytz
+import json
 from typing import Optional, List
 from collections import defaultdict
 
@@ -13,376 +14,166 @@ from tle.util import db
 
 logger = logging.getLogger(__name__)
 
-
 class AutomationCogError(commands.CommandError):
     pass
 
-
 class Automation(commands.Cog):
-    """Automated standings and leaderboard posts"""
+    """Automated standings, leaderboard posts, and rank monitoring"""
 
     def __init__(self, bot):
         self.bot = bot
         self.logger = logging.getLogger(self.__class__.__name__)
         
-        # Create the table on startup
-        self._create_automation_table()
-        
-        # Start the automated tasks
         self.weekly_standings_task.start()
         self.monthly_standings_task.start()
+        self.rank_monitor.start()
 
     def cog_unload(self):
-        """Stop tasks when cog is unloaded"""
         self.weekly_standings_task.cancel()
         self.monthly_standings_task.cancel()
+        self.rank_monitor.cancel()
 
-    def _get_automation_channel(self, guild_id: int) -> Optional[int]:
-        """Get the configured automation channel for a guild"""
-        # Store in database similar to reminder settings
-        # For now, we'll use a simple in-memory dict (should be persisted to DB)
+    def _get_setting(self, guild_id: int, setting_type: str):
+        query = 'SELECT channel_id, role_name FROM automation_settings_v2 WHERE guild_id = ? AND setting_type = ?'
+        return cf_common.user_db._fetchone(query, (str(guild_id), setting_type))
+
+    def _set_setting(self, guild_id: int, setting_type: str, channel_id: int, role_name: str = None):
         query = '''
-            SELECT channel_id FROM automation_settings WHERE guild_id = ?
+            INSERT OR REPLACE INTO automation_settings_v2 (guild_id, channel_id, setting_type, role_name)
+            VALUES (?, ?, ?, ?)
         '''
-        try:
-            result = cf_common.user_db.conn.execute(query, (str(guild_id),)).fetchone()
-            return int(result[0]) if result else None
-        except Exception as e:
-            self.logger.error(f"Error fetching automation channel: {e}")
-            return None
+        cf_common.user_db.conn.execute(query, (str(guild_id), str(channel_id), setting_type, role_name))
+        cf_common.user_db.conn.commit()
 
-    def _set_automation_channel(self, guild_id: int, channel_id: int):
-        """Set the automation channel for a guild"""
-        query = '''
-            INSERT OR REPLACE INTO automation_settings (guild_id, channel_id)
-            VALUES (?, ?)
-        '''
-        try:
-            cf_common.user_db.conn.execute(query, (str(guild_id), str(channel_id)))
-            cf_common.user_db.conn.commit()
-            cf_common.user_db.update()
-        except Exception as e:
-            self.logger.error(f"Error setting automation channel: {e}")
-            raise AutomationCogError("Failed to set automation channel")
+    @commands.command(brief='Bind channel for weekly standings of a specific role')
+    @commands.has_permissions(administrator=True)
+    async def weekly_standings(self, ctx, role: discord.Role):
+        """ربط القناة الحالية لعرض الترتيب الأسبوعي لرتبة معينة (كل جمعة الساعة 12:00 ظهراً)."""
+        self._set_setting(ctx.guild.id, 'weekly', ctx.channel.id, role.name)
+        embed = discord_common.embed_success(f"✅ تم ربط القناة برتبة **{role.name}** لعرض الترتيب الأسبوعي.")
+        await ctx.send(embed=embed)
 
-    def _create_automation_table(self):
-        """Create the automation_settings table if it doesn't exist"""
-        query = '''
-            CREATE TABLE IF NOT EXISTS automation_settings (
-                guild_id TEXT PRIMARY KEY,
-                channel_id TEXT
-            )
-        '''
-        try:
-            cf_common.user_db.conn.execute(query)
-            cf_common.user_db.conn.commit()
-        except Exception as e:
-            self.logger.error(f"Error creating automation table: {e}")
+    @commands.command(brief='Set current channel as Master Event Channel')
+    @commands.has_permissions(administrator=True)
+    async def master_channel(self, ctx):
+        """تعيين القناة الحالية كقناة الإعلانات الرئيسية للترتيب العالمي والترقيات."""
+        self._set_setting(ctx.guild.id, 'master', ctx.channel.id)
+        embed = discord_common.embed_success("🏆 تم تعيين القناة كـ **قناة الإعلانات الرئيسية**.")
+        await ctx.send(embed=embed)
 
-    async def _get_top_users_by_rating(self, guild_id: int, limit: int = 10) -> List[tuple]:
-        """Get top users by Codeforces rating for a guild"""
-        try:
-            users = cf_common.user_db.get_cf_users_for_guild(str(guild_id))
-            # Filter out users without rating and sort by rating
-            rated_users = [(user_id, user) for user_id, user in users if user and user.rating]
-            rated_users.sort(key=lambda x: x[1].rating, reverse=True)
-            return rated_users[:limit]
-        except Exception as e:
-            self.logger.error(f"Error fetching top users: {e}")
-            return []
-
-    async def _get_top_users_by_solved_count(self, guild_id: int, limit: int = 10) -> List[tuple]:
-        """Get top users by number of problems solved"""
-        try:
-            users = cf_common.user_db.get_cf_users_for_guild(str(guild_id))
-            user_solve_counts = []
-            
-            for user_id, user in users:
-                if not user or not user.handle:
-                    continue
-                
-                try:
-                    # Fetch submissions for the user
-                    submissions = await cf.user.status(handle=user.handle)
-                    # Count unique solved problems
-                    solved = {sub.problem.name for sub in submissions if sub.verdict == 'OK'}
-                    user_solve_counts.append((user_id, user, len(solved)))
-                except Exception as e:
-                    self.logger.warning(f"Error fetching submissions for {user.handle}: {e}")
-                    continue
-            
-            # Sort by solve count
-            user_solve_counts.sort(key=lambda x: x[2], reverse=True)
-            return user_solve_counts[:limit]
-        except Exception as e:
-            self.logger.error(f"Error fetching users by solve count: {e}")
-            return []
-
-    def _create_standings_embed(self, title: str, users_data: List, guild: discord.Guild, 
-                                mode: str = "rating") -> discord.Embed:
-        """Create an embed for standings"""
-        embed = discord.Embed(
-            title=title,
-            color=discord.Color.gold(),
-            timestamp=datetime.datetime.utcnow()
-        )
-        
-        if not users_data:
-            embed.description = "No data available yet. Make sure users have linked their handles!"
-            return embed
-
-        # Medal emojis for top 3
-        medals = ["🥇", "🥈", "🥉"]
-        
-        description_lines = []
-        
-        for idx, data in enumerate(users_data):
-            rank = idx + 1
-            medal = medals[idx] if idx < 3 else f"**{rank}.**"
-            
-            if mode == "rating":
-                user_id, user = data
-                member = guild.get_member(user_id)
-                username = member.display_name if member else f"User {user_id}"
-                handle = user.handle
-                rating = user.rating or 0
-                
-                # Color code based on rating
-                if rating >= 2400:
-                    color = "🔴"
-                elif rating >= 2100:
-                    color = "🟠"
-                elif rating >= 1900:
-                    color = "🟣"
-                elif rating >= 1600:
-                    color = "🔵"
-                elif rating >= 1400:
-                    color = "🟢"
-                elif rating >= 1200:
-                    color = "🟢"
-                else:
-                    color = "⚪"
-                
-                line = f"{medal} {color} **{username}** ([{handle}](https://codeforces.com/profile/{handle})) - **{rating}**"
-            else:  # solved count mode
-                user_id, user, solve_count = data
-                member = guild.get_member(user_id)
-                username = member.display_name if member else f"User {user_id}"
-                handle = user.handle
-                
-                line = f"{medal} **{username}** ([{handle}](https://codeforces.com/profile/{handle})) - **{solve_count}** problems"
-            
-            description_lines.append(line)
-        
-        embed.description = "\n".join(description_lines)
-        embed.set_footer(text=f"Generated for {guild.name}")
-        
-        return embed
-
-    @tasks.loop(time=datetime.time(hour=10, minute=0, tzinfo=pytz.UTC))  # Friday 12:00 PM Cairo time (10:00 UTC)
+    @tasks.loop(time=datetime.time(hour=10, minute=0, tzinfo=pytz.UTC)) # Friday 12:00 PM Cairo
     async def weekly_standings_task(self):
-        """Post weekly standings every Friday at 12:00 PM"""
-        # Check if today is Friday (weekday 4)
         if datetime.datetime.now(pytz.UTC).weekday() != 4:
             return
         
-        self.logger.info("Running weekly standings task...")
-        
         for guild in self.bot.guilds:
-            try:
-                channel_id = self._get_automation_channel(guild.id)
-                if not channel_id:
-                    continue
-                
-                channel = guild.get_channel(channel_id)
-                if not channel:
-                    self.logger.warning(f"Channel {channel_id} not found in guild {guild.name}")
-                    continue
-                
-                # Get top users by rating
-                top_users = await self._get_top_users_by_rating(guild.id, limit=10)
-                
-                embed = self._create_standings_embed(
-                    title="🏆 Weekly Standings - Top 10 by Rating",
-                    users_data=top_users,
-                    guild=guild,
-                    mode="rating"
-                )
-                
-                await channel.send(embed=embed)
-                self.logger.info(f"Posted weekly standings to {guild.name}")
-                
-            except Exception as e:
-                self.logger.error(f"Error posting weekly standings for {guild.name}: {e}")
+            setting = self._get_setting(guild.id, 'weekly')
+            if not setting: continue
+            
+            channel = guild.get_channel(int(setting.channel_id))
+            if not channel: continue
+            
+            role_name = setting.role_name
+            users = cf_common.user_db.get_cf_users_for_guild(str(guild.id))
+            
+            filtered_users = []
+            for user_id, user in users:
+                member = guild.get_member(user_id)
+                if member and any(r.name == role_name for r in member.roles):
+                    filtered_users.append((user_id, user))
+            
+            filtered_users.sort(key=lambda x: x[1].rating or 0, reverse=True)
+            
+            embed = self._create_standings_embed(
+                f"📊 الترتيب الأسبوعي - {role_name}",
+                filtered_users[:10],
+                guild
+            )
+            await channel.send(embed=embed)
 
-    @weekly_standings_task.before_loop
-    async def before_weekly_standings(self):
-        """Wait until bot is ready before starting the task"""
-        await self.bot.wait_until_ready()
-        self._create_automation_table()
-
-    @tasks.loop(time=datetime.time(hour=10, minute=0, tzinfo=pytz.UTC))  # 1st of month at 12:00 PM Cairo (10:00 UTC)
+    @tasks.loop(time=datetime.time(hour=10, minute=0, tzinfo=pytz.UTC)) # 1st of Month 12:00 PM Cairo
     async def monthly_standings_task(self):
-        """Post monthly standings on the 1st of every month at 12:00 PM"""
-        # Check if today is the 1st of the month
         if datetime.datetime.now(pytz.UTC).day != 1:
             return
         
-        self.logger.info("Running monthly standings task...")
-        
         for guild in self.bot.guilds:
-            try:
-                channel_id = self._get_automation_channel(guild.id)
-                if not channel_id:
-                    continue
-                
-                channel = guild.get_channel(channel_id)
-                if not channel:
-                    self.logger.warning(f"Channel {channel_id} not found in guild {guild.name}")
-                    continue
-                
-                # Get top users by rating
-                top_users = await self._get_top_users_by_rating(guild.id, limit=15)
-                
-                # Get current month name
-                month_name = datetime.datetime.now().strftime("%B %Y")
-                
-                embed = self._create_standings_embed(
-                    title=f"🏆 Monthly Standings - {month_name}",
-                    users_data=top_users,
-                    guild=guild,
-                    mode="rating"
-                )
-                
-                await channel.send(embed=embed)
-                self.logger.info(f"Posted monthly standings to {guild.name}")
-                
-            except Exception as e:
-                self.logger.error(f"Error posting monthly standings for {guild.name}: {e}")
+            setting = self._get_setting(guild.id, 'master')
+            if not setting: continue
+            
+            channel = guild.get_channel(int(setting.channel_id))
+            if not channel: continue
+            
+            users = cf_common.user_db.get_cf_users_for_guild(str(guild.id))
+            users.sort(key=lambda x: x[1].rating or 0, reverse=True)
+            
+            embed = self._create_standings_embed(
+                f"🌍 الترتيب الشهري العالمي - {datetime.datetime.now().strftime('%B %Y')}",
+                users[:20],
+                guild
+            )
+            await channel.send(embed=embed)
 
+    @tasks.loop(minutes=30)
+    async def rank_monitor(self):
+        """Monitor rating changes and update roles/notify master channel."""
+        for guild in self.bot.guilds:
+            master_setting = self._get_setting(guild.id, 'master')
+            master_channel = guild.get_channel(int(master_setting.channel_id)) if master_setting else None
+            
+            users = cf_common.user_db.get_cf_users_for_guild(str(guild.id))
+            for user_id, user in users:
+                member = guild.get_member(user_id)
+                if not member: continue
+                
+                new_rank = cf.rating2rank(user.rating).title
+                current_rank_role = None
+                cf_ranks = [r.title for r in cf.RANKS]
+                for role in member.roles:
+                    if role.name in cf_ranks:
+                        current_rank_role = role.name
+                        break
+                
+                if new_rank != current_rank_role:
+                    try:
+                        to_remove = [r for r in member.roles if r.name in cf_ranks and r.name != new_rank]
+                        await member.remove_roles(*to_remove)
+                        
+                        new_role = discord.utils.get(guild.roles, name=new_rank)
+                        if new_role:
+                            await member.add_roles(new_role)
+                        
+                        if master_channel and user.rating:
+                            embed = discord_common.embed_success(
+                                f"🎉 **{member.display_name}** تم ترفيعه إلى رتبة **{new_rank}**!\\n"
+                                f"التقييم الجديد: **{user.rating}**"
+                            )
+                            if member.avatar: embed.set_thumbnail(url=member.avatar.url)
+                            await master_channel.send(embed=embed)
+                            
+                    except Exception as e:
+                        self.logger.warning(f"Failed to update roles for {member.display_name}: {e}")
+
+    def _create_standings_embed(self, title, users_data, guild):
+        embed = discord.Embed(title=title, color=discord.Color.blue(), timestamp=datetime.datetime.utcnow())
+        if not users_data:
+            embed.description = "لا يوجد بيانات متاحة حالياً."
+            return embed
+        
+        lines = []
+        for i, (uid, user) in enumerate(users_data):
+            member = guild.get_member(uid)
+            name = member.display_name if member else user.handle
+            emoji = ["🥇", "🥈", "🥉"][i] if i < 3 else f"{i+1}."
+            lines.append(f"{emoji} **{name}** - {user.rating or 0}")
+        
+        embed.description = "\n".join(lines)
+        return embed
+
+    @rank_monitor.before_loop
+    @weekly_standings_task.before_loop
     @monthly_standings_task.before_loop
-    async def before_monthly_standings(self):
-        """Wait until bot is ready before starting the task"""
+    async def before_tasks(self):
         await self.bot.wait_until_ready()
 
-    @commands.command(brief='Set automation channel for standings')
-    @commands.has_permissions(administrator=True)
-    async def setup_auto(self, ctx, channel: discord.TextChannel = None):
-        """Set the channel where automated standings will be posted.
-        
-        Usage:
-        ;setup_auto #channel-name
-        ;setup_auto (uses current channel)
-        """
-        target_channel = channel or ctx.channel
-        
-        try:
-            self._set_automation_channel(ctx.guild.id, target_channel.id)
-            
-            embed = discord_common.embed_success(
-                f"Automation channel set to {target_channel.mention}\n\n"
-                f"**Weekly Standings:** Every Friday at 12:00 PM\n"
-                f"**Monthly Standings:** 1st of every month at 12:00 PM"
-            )
-            await ctx.send(embed=embed)
-            
-        except Exception as e:
-            raise AutomationCogError(f"Failed to set automation channel: {e}")
-
-    @commands.command(brief='Show automation settings')
-    async def auto_settings(self, ctx):
-        """Show current automation settings for this server"""
-        channel_id = self._get_automation_channel(ctx.guild.id)
-        
-        embed = discord.Embed(
-            title="⚙️ Automation Settings",
-            color=discord.Color.blue()
-        )
-        
-        if channel_id:
-            channel = ctx.guild.get_channel(channel_id)
-            channel_mention = channel.mention if channel else f"Channel ID: {channel_id} (not found)"
-            embed.add_field(name="Automation Channel", value=channel_mention, inline=False)
-        else:
-            embed.add_field(name="Automation Channel", value="Not configured", inline=False)
-        
-        embed.add_field(name="Weekly Standings", value="Every Friday at 12:00 PM", inline=True)
-        embed.add_field(name="Monthly Standings", value="1st of every month at 12:00 PM", inline=True)
-        
-        next_friday = datetime.datetime.now()
-        days_ahead = 4 - next_friday.weekday()  # 4 = Friday
-        if days_ahead <= 0:
-            days_ahead += 7
-        next_friday += datetime.timedelta(days=days_ahead)
-        
-        embed.add_field(
-            name="Next Weekly Post",
-            value=next_friday.strftime("%A, %B %d, %Y"),
-            inline=False
-        )
-        
-        await ctx.send(embed=embed)
-
-    @commands.command(brief='Manually trigger weekly standings', hidden=True)
-    @commands.has_permissions(administrator=True)
-    async def post_weekly(self, ctx):
-        """Manually post weekly standings (for testing)"""
-        channel_id = self._get_automation_channel(ctx.guild.id)
-        
-        if not channel_id:
-            raise AutomationCogError("Automation channel not configured. Use `;setup_auto` first.")
-        
-        channel = ctx.guild.get_channel(channel_id)
-        if not channel:
-            raise AutomationCogError(f"Configured channel not found.")
-        
-        top_users = await self._get_top_users_by_rating(ctx.guild.id, limit=10)
-        
-        embed = self._create_standings_embed(
-            title="🏆 Weekly Standings - Top 10 by Rating",
-            users_data=top_users,
-            guild=ctx.guild,
-            mode="rating"
-        )
-        
-        await channel.send(embed=embed)
-        await ctx.send(f"✅ Posted weekly standings to {channel.mention}")
-
-    @commands.command(brief='Manually trigger monthly standings', hidden=True)
-    @commands.has_permissions(administrator=True)
-    async def post_monthly(self, ctx):
-        """Manually post monthly standings (for testing)"""
-        channel_id = self._get_automation_channel(ctx.guild.id)
-        
-        if not channel_id:
-            raise AutomationCogError("Automation channel not configured. Use `;setup_auto` first.")
-        
-        channel = ctx.guild.get_channel(channel_id)
-        if not channel:
-            raise AutomationCogError(f"Configured channel not found.")
-        
-        top_users = await self._get_top_users_by_rating(ctx.guild.id, limit=15)
-        
-        month_name = datetime.datetime.now().strftime("%B %Y")
-        
-        embed = self._create_standings_embed(
-            title=f"🏆 Monthly Standings - {month_name}",
-            users_data=top_users,
-            guild=ctx.guild,
-            mode="rating"
-        )
-        
-        await channel.send(embed=embed)
-        await ctx.send(f"✅ Posted monthly standings to {channel.mention}")
-
-    async def cog_command_error(self, ctx, error):
-        """Error handler for this cog"""
-        if isinstance(error, AutomationCogError):
-            await ctx.send(embed=discord_common.embed_alert(error))
-        elif isinstance(error, commands.MissingPermissions):
-            await ctx.send(embed=discord_common.embed_alert("You need Administrator permissions to use this command."))
-
-
 async def setup(bot):
-    """Setup function to load the cog"""
     await bot.add_cog(Automation(bot))

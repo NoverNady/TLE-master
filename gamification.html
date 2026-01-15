@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام اللعب والمبارزات - TLE Bot</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&family=Fira+Code:wght@400;500&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #111827;
+            --card-bg: #1f2937;
+            --primary-color: #38bdf8;
+            --accent-color: #fbbf24;
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --success: #10b981;
+            --code-bg: #030712;
+            --border: rgba(255, 255, 255, 0.05);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        body {
+            background: var(--bg-color);
+            color: var(--text-main);
+            padding: 2rem;
+            direction: rtl;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 2rem;
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .header {
+            margin-bottom: 3rem;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 1rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .card-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .cmd-name {
+            font-family: 'Fira Code', monospace;
+            color: var(--accent-color);
+            font-size: 1.1rem;
+            direction: ltr;
+        }
+
+        .badge {
+            background: rgba(56, 189, 248, 0.1);
+            color: var(--primary-color);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+
+        .desc {
+            font-size: 0.95rem;
+            color: var(--text-main);
+            line-height: 1.7;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+        }
+
+        th {
+            text-align: right;
+            color: var(--text-muted);
+            border-bottom: 1px solid var(--border);
+            padding: 8px 4px;
+        }
+
+        td {
+            padding: 8px 4px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+        }
+
+        .arg {
+            font-family: 'Fira Code', monospace;
+            color: var(--primary-color);
+            direction: ltr;
+            display: inline-block;
+        }
+
+        .usage {
+            background: var(--code-bg);
+            padding: 10px;
+            border-radius: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .code {
+            font-family: 'Fira Code', monospace;
+            color: var(--success);
+            font-size: 0.85rem;
+            direction: ltr;
+        }
+
+        .copy {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text-muted);
+        }
+
+        .copy:hover {
+            color: white;
+        }
+
+        .section-title {
+            grid-column: 1 / -1;
+            margin-top: 2rem;
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            border-right: 4px solid var(--primary-color);
+            padding-right: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <a href="index.html" class="back-link">← العودة للرئيسية</a>
+    <div class="header">
+        <h1>نظام اللعب والمبارزات (Gamification & Duels)</h1>
+        <p style="color:var(--text-muted)">تحكم في رصيدك، تحدَّ أصدقاءك، وحسن مستواك البرمجي.</p>
+    </div>
+
+    <div class="grid">
+        <!-- GAMIFICATION -->
+        <h2 class="section-title">🏆 نظام النقاط (Gamification)</h2>
+
+        <div class="card">
+            <div class="card-head">
+                <span class="cmd-name">;points [member]</span>
+                <span class="badge">عام</span>
+            </div>
+            <p class="desc">عرض إجمالي النقاط الشهرية التي تم جمعها من حل المسائل والمبارزات.</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>الوسيط</th>
+                        <th>الوصف</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="arg">[member]</span></td>
+                        <td>منشن للعضو (اختياري، الافتراضي هو أنت).</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="usage">
+                <span class="code">;points @User</span>
+                <button class="copy" onclick="copy(';points @User')">📋</button>
+            </div>
+        </div>
+
+        <!-- DUELS -->
+        <h2 class="section-title">⚔️ نظام المبارزات (Duels)</h2>
+
+        <div class="card">
+            <div class="card-head">
+                <span class="cmd-name">;duel challenge &lt;opponent&gt; [rating]</span>
+                <span class="badge">عام</span>
+            </div>
+            <p class="desc">تحدي عضو آخر في مبارزة برمجة (3-4 مسائل). تمنح 30 نقطة لكل مسألة محلولة.</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>الوسيط</th>
+                        <th>الوصف</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="arg">&lt;opponent&gt;</span></td>
+                        <td>الخصم المراد تحديه.</td>
+                    </tr>
+                    <tr>
+                        <td><span class="arg">[rating]</span></td>
+                        <td>تقييم المسائل (مثلاً: 1400).</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="usage">
+                <span class="code">;duel challenge @Opponent 1600</span>
+                <button class="copy" onclick="copy(';duel challenge @Opponent 1600')">📋</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-head">
+                <span class="cmd-name">;duel accept</span>
+                <span class="badge">عام</span>
+            </div>
+            <p class="desc">قبول تحدي مبارزة قائم موجه إليك للبدء فوراً.</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>الوسيط</th>
+                        <th>الوصف</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td colspan="2" style="text-align:center;color:var(--text-muted)">لا توجد معاملات</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="usage"><span class="code">;duel accept</span><button class="copy"
+                    onclick="copy(';duel accept')">📋</button></div>
+        </div>
+
+        <div class="card">
+            <div class="card-head">
+                <span class="cmd-name">;duel decline</span>
+                <span class="badge">عام</span>
+            </div>
+            <p class="desc">رفض طلب مبارزة مقدم إليك.</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>الوسيط</th>
+                        <th>الوصف</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td colspan="2" style="text-align:center;color:var(--text-muted)">لا توجد معاملات</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="usage"><span class="code">;duel decline</span><button class="copy"
+                    onclick="copy(';duel decline')">📋</button></div>
+        </div>
+
+        <div class="card">
+            <div class="card-head">
+                <span class="cmd-name">;duel complete</span>
+                <span class="badge">عام</span>
+            </div>
+            <p class="desc">تأكيد حل المسائل وإنهاء المبارزة لحساب النتائج.</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>الوسيط</th>
+                        <th>الوصف</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td colspan="2" style="text-align:center;color:var(--text-muted)">لا توجد معاملات</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="usage"><span class="code">;duel complete</span><button class="copy"
+                    onclick="copy(';duel complete')">📋</button></div>
+        </div>
+
+        <div class="card">
+            <div class="card-head">
+                <span class="cmd-name">;duel history [member]</span>
+                <span class="badge">عام</span>
+            </div>
+            <p class="desc">عرض سجل المبارزات السابقة ونتائجها للعضو.</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>الوسيط</th>
+                        <th>الوصف</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="arg">[member]</span></td>
+                        <td>العضو (اختياري).</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="usage"><span class="code">;duel history @User</span><button class="copy"
+                    onclick="copy(';duel history @User')">📋</button></div>
+        </div>
+
+        <div class="card">
+            <div class="card-head">
+                <span class="cmd-name">;duel rating [member]</span>
+                <span class="badge">عام</span>
+            </div>
+            <p class="desc">عرض التقييم الخاص بالمبارزات (Duel Rating) للعضو.</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>الوسيط</th>
+                        <th>الوصف</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="arg">[member]</span></td>
+                        <td>العضو (اختياري).</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="usage"><span class="code">;duel rating</span><button class="copy"
+                    onclick="copy(';duel rating')">📋</button></div>
+        </div>
+
+        <!-- TRAINING -->
+        <h2 class="section-title">🎯 نظام التدريب (Gitgud)</h2>
+
+        <div class="card">
+            <div class="card-head">
+                <span class="cmd-name">;gitgud [rating]</span>
+                <span class="badge">عام</span>
+            </div>
+            <p class="desc">طلب مسألة تدريبية عشوائية تناسب مستواك أو تقييم محدد.</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>الوسيط</th>
+                        <th>الوصف</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="arg">[rating]</span></td>
+                        <td>تقييم المسألة.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="card">
+            <div class="card-head">
+                <span class="cmd-name">;gotgud</span>
+                <span class="badge">عام</span>
+            </div>
+            <p class="desc">تأكيد حل مسألة الـ Gitgud للحصول على نقاط.</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>الوسيط</th>
+                        <th>الوصف</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td colspan="2" style="text-align:center;color:var(--text-muted)">لا توجد معاملات</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="card">
+            <div class="card-head">
+                <span class="cmd-name">;nogud</span>
+                <span class="badge">عام</span>
+            </div>
+            <p class="desc">تخطي المسألة الحالية وفقدان نقاط التقييم (بمقدار النقاط الممنوحة).</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>الوسيط</th>
+                        <th>الوصف</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td colspan="2" style="text-align:center;color:var(--text-muted)">لا توجد معاملات</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="card">
+            <div class="card-head">
+                <span class="cmd-name">;gimme [tags...] [rating]</span>
+                <span class="badge">عام</span>
+            </div>
+            <p class="desc">طلب مسألة عشوائية بـ tags معينة (مثلاً math) وتقييم محدد.</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>الوسيط</th>
+                        <th>الوصف</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="arg">[tags...]</span></td>
+                        <td>كلمات دلالية (math, dsu...).</td>
+                    </tr>
+                    <tr>
+                        <td><span class="arg">[rating]</span></td>
+                        <td>التقييم المطلوب.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        function copy(text) {
+            navigator.clipboard.writeText(text);
+            alert('تم النسخ: ' + text);
+        }
+    </script>
+</body>
+
+</html>

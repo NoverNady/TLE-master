@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TLE Bot - Codeforces & Contests</title>
+    <style>
+        body {
+            background-color: #121212;
+            color: #e0e0e0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        h1,
+        h2,
+        h3 {
+            color: #ffffff;
+        }
+
+        h1 {
+            text-align: center;
+            border-bottom: 2px solid #4caf50;
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+        }
+
+        .nav {
+            background-color: #1e1e1e;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .nav a {
+            color: #e0e0e0;
+            text-decoration: none;
+            font-weight: bold;
+            padding: 5px 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .nav a:hover,
+        .nav a.active {
+            background-color: #4caf50;
+            color: #fff;
+        }
+
+        .command-block {
+            background-color: #1e1e1e;
+            padding: 20px;
+            margin-bottom: 25px;
+            border-radius: 8px;
+            border-right: 5px solid #ff9800;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        .command-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #333;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+
+        .command-name {
+            font-size: 1.4em;
+            color: #ff9800;
+            font-weight: bold;
+            font-family: monospace;
+        }
+
+        .command-desc {
+            font-size: 1.1em;
+            margin-bottom: 15px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            background-color: #252525;
+        }
+
+        th,
+        td {
+            border: 1px solid #333;
+            padding: 10px;
+            text-align: right;
+        }
+
+        th {
+            background-color: #333;
+            color: #fff;
+            width: 30%;
+        }
+
+        code {
+            background-color: #2d2d2d;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: Consolas, monospace;
+            color: #ffeb3b;
+        }
+
+        .example {
+            background-color: #000;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            font-family: monospace;
+            border-right: 3px solid #2196f3;
+        }
+
+        .section-title {
+            color: #4caf50;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+            border-bottom: 1px dashed #4caf50;
+            display: inline-block;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>📊 Codeforces & Contests</h1>
+
+        <div class="nav">
+            <a href="index.html">الرئيسية</a>
+            <a href="gamification.html">التلعيب (Gamification)</a>
+            <a href="core.html" class="active">Codeforces & Contests</a>
+            <a href="admin.html">أدوات الإدارة</a>
+        </div>
+
+        <h2 class="section-title">أوامر الحسابات (Handles)</h2>
+
+        <div class="command-block">
+            <div class="command-header">
+                <span class="command-name">;handle identify</span>
+            </div>
+            <div class="command-desc">ربط حساب Codeforces الخاص بك بحساب Discord.</div>
+            <table>
+                <tr>
+                    <th>المعامل</th>
+                    <th>الوصف</th>
+                </tr>
+                <tr>
+                    <td>Handle</td>
+                    <td>اسم المستخدم في Codeforces</td>
+                </tr>
+            </table>
+            <div class="example">;handle identify Tourist</div>
+        </div>
+
+        <div class="command-block">
+            <div class="command-header">
+                <span class="command-name">;handle set</span>
+            </div>
+            <div class="command-desc">تعيين حساب لمستخدم آخر (يتطلب صلاحيات).</div>
+            <div class="example">;handle set @User Tourist</div>
+        </div>
+
+        <h2 class="section-title">معلومات Codeforces</h2>
+
+        <div class="command-block">
+            <div class="command-header">
+                <span class="command-name">;cf user</span>
+            </div>
+            <div class="command-desc">عرض بطاقة معلومات شاملة عن المستخدم (التقييم، الرتبة، الصورة).</div>
+            <div class="example">;cf user @User<br>;cf user Tourist</div>
+        </div>
+
+        <div class="command-block">
+            <div class="command-header">
+                <span class="command-name">;cf rating</span>
+            </div>
+            <div class="command-desc">عرض التقييم الحالي والأعلى للمستخدم.</div>
+            <div class="example">;cf rating @User</div>
+        </div>
+
+        <h2 class="section-title">المسابقات (Contests)</h2>
+
+        <div class="command-block">
+            <div class="command-header">
+                <span class="command-name">;c future</span>
+            </div>
+            <div class="command-desc">عروض قائمة بالمسابقات القادمة على المنصات المدعومة.</div>
+            <div class="example">;c future<br>;c future codeforces</div>
+        </div>
+
+        <div class="command-block">
+            <div class="command-header">
+                <span class="command-name">;ranklist</span>
+            </div>
+            <div class="command-desc">عرض ترتيب أعضاء السيرفر في مسابقة معينة.</div>
+            <table>
+                <tr>
+                    <th>المعامل</th>
+                    <th>الوصف</th>
+                </tr>
+                <tr>
+                    <td>ID</td>
+                    <td>معرف المسابقة (Contest ID)</td>
+                </tr>
+            </table>
+            <div class="example">;ranklist 1500</div>
+        </div>
+
+        <h2 class="section-title">الرسوم البيانية (Graphs)</h2>
+
+        <div class="command-block">
+            <div class="command-header">
+                <span class="command-name">;plot rating</span>
+            </div>
+            <div class="command-desc">رسم بياني لتاريخ تقييم المستخدم.</div>
+            <div class="example">;plot rating @User</div>
+        </div>
+
+        <div class="command-block">
+            <div class="command-header">
+                <span class="command-name">;hist</span>
+            </div>
+            <div class="command-desc">رسم مدرج تكراري (Histogram) للمسائل التي حلها المستخدم حسب التقييم.</div>
+            <div class="example">;hist @User</div>
+        </div>
+
+    </div>
+</body>
+
+</html>

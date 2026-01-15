@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الإدارة والأتمتة - TLE Bot</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&family=Fira+Code:wght@400;500&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --primary-color: #38bdf8;
+            --admin-color: #f43f5e;
+            --accent-color: #fbbf24;
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --code-bg: #020617;
+            --border: rgba(255, 255, 255, 0.05);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        body {
+            background: var(--bg-color);
+            color: var(--text-main);
+            padding: 2rem;
+        }
+
+        .back {
+            display: inline-block;
+            margin-bottom: 2rem;
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .header {
+            margin-bottom: 4rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+
+        .cmd-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .cmd-name {
+            font-family: 'Fira Code', monospace;
+            color: var(--accent-color);
+            direction: ltr;
+            font-weight: 600;
+        }
+
+        .badge-admin {
+            background: rgba(244, 63, 94, 0.1);
+            color: var(--admin-color);
+            padding: 2px 10px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            border: 1px solid rgba(244, 63, 94, 0.2);
+        }
+
+        .desc {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        table {
+            width: 100%;
+            font-size: 0.85rem;
+            margin-bottom: 1rem;
+        }
+
+        th {
+            text-align: right;
+            color: var(--text-muted);
+            border-bottom: 1px solid var(--border);
+            padding: 5px;
+        }
+
+        td {
+            padding: 8px 5px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+        }
+
+        .arg {
+            font-family: 'Fira Code', monospace;
+            color: var(--primary-color);
+            direction: ltr;
+            display: inline-block;
+        }
+
+        .usage {
+            background: var(--code-bg);
+            padding: 12px;
+            border-radius: 8px;
+            font-family: 'Fira Code', monospace;
+            color: #10b981;
+            font-size: 0.9rem;
+            direction: ltr;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .section-title {
+            grid-column: 1 / -1;
+            margin-top: 2rem;
+            color: var(--admin-color);
+            font-size: 1.5rem;
+            border-right: 4px solid var(--admin-color);
+            padding-right: 12px;
+        }
+    </style>
+</head>
+
+<body>
+    <a href="index.html" class="back">← العودة للرئيسية</a>
+    <div class="header">
+        <h1>أدوات الإدارة والأتمتة (Admin & Automation)</h1>
+        <p style="color:var(--text-muted)">تحكم كامل في إعدادات السيرفر، الرتب، والتقارير الأسبوعية التلقائية.</p>
+    </div>
+
+    <div class="grid">
+        <!-- AUTOMATION -->
+        <h2 class="section-title">🤖 أنظمة الأتمتة (Automation)</h2>
+
+        <div class="card">
+            <div class="cmd-top">
+                <span class="cmd-name">;weekly_standings &lt;role&gt;</span>
+                <span class="badge-admin">إدارة فقط</span>
+            </div>
+            <p class="desc">تفعيل لوحة الترتيب الأسبوعي في القناة الحالية لرتبة محددة.</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>الوسيط</th>
+                        <th>الوصف</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="arg">&lt;role&gt;</span></td>
+                        <td>اسم الرتبة المطلوب متابعتها.</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="usage"><span>;weekly_standings G15</span><span>📋</span></div>
+        </div>
+
+        <div class="card">
+            <div class="cmd-top">
+                <span class="cmd-name">;master_channel</span>
+                <span class="badge-admin">إدارة فقط</span>
+            </div>
+            <p class="desc">تعيين القناة الحالية لاستقبال إعلانات الترقيات، نتائج الشهر، وتنبيهات الرتب.</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>الوسيط</th>
+                        <th>الوصف</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td colspan="2" style="text-align:center;color:var(--text-muted)">لا توجد معاملات</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- ADMIN TOOLS -->
+        <h2 class="section-title">⚙️ أدوات التحكم (Admin Tools)</h2>
+
+        <div class="card">
+            <div class="cmd-top">
+                <span class="cmd-name">;init_roles</span>
+                <span class="badge-admin">إدارة فقط</span>
+            </div>
+            <p class="desc">إنشاء كافة الرتب اللازمة للتصنيف (G1 إلى G20) مع تلوين رتبة الـ ADMIN باللون الذهبي.</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>الوسيط</th>
+                        <th>الوصف</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td colspan="2" style="text-align:center;color:var(--text-muted)">لا توجد معاملات</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="card">
+            <div class="cmd-top">
+                <span class="cmd-name">;handle set &lt;user&gt; &lt;handle&gt;</span>
+                <span class="badge-admin">إدارة فقط</span>
+            </div>
+            <p class="desc">ربط يدوي للمستخدم بمعرف كودفورس (يستخدم في الحالات الخاصة أو تجاوز التعريف التلقائي).</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>الوسيط</th>
+                        <th>الوصف</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="arg">&lt;user&gt;</span></td>
+                        <td>منشن العضو.</td>
+                    </tr>
+                    <tr>
+                        <td><span class="arg">&lt;handle&gt;</span></td>
+                        <td>المعرف المطلوب.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- LISTS -->
+        <h2 class="section-title">📝 نظام القوائم (Lists)</h2>
+
+        <div class="card">
+            <div class="cmd-top">
+                <span class="cmd-name">;list create &lt;name&gt;</span>
+                <span class="badge-admin">إدارة فقط</span>
+            </div>
+            <p class="desc">إنشاء قائمة فارغة جديدة لتنظيم مجموعة من المستخدمين.</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>الوسيط</th>
+                        <th>الوصف</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="arg">&lt;name&gt;</span></td>
+                        <td>اسم القائمة (مثلاً my_team).</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="card">
+            <div class="cmd-top">
+                <span class="cmd-name">;list add &lt;name&gt; &lt;res&gt; &lt;h...&gt;</span>
+                <span class="badge">عام</span>
+            </div>
+            <p class="desc">إضافة معرفات متعددة لقائمة معينة. استخدم Regex للتصفية أو "none" للتجاهل.</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>الوسيط</th>
+                        <th>الوصف</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="arg">&lt;name&gt;</span></td>
+                        <td>اسم القائمة.</td>
+                    </tr>
+                    <tr>
+                        <td><span class="arg">&lt;res&gt;</span></td>
+                        <td>فيلتر (ضع none).</td>
+                    </tr>
+                    <tr>
+                        <td><span class="arg">&lt;h...&gt;</span></td>
+                        <td>قائمة المعرفات.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- STARBOARD -->
+        <h2 class="section-title">⭐ التميز (Starboard)</h2>
+
+        <div class="card">
+            <div class="cmd-top">
+                <span class="cmd-name">;starboard here</span>
+                <span class="badge-admin">إدارة فقط</span>
+            </div>
+            <p class="desc">ضبط القناة الحالية كقناة رسائل النجوم (Starboard) المتميزة.</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>الوسيط</th>
+                        <th>الوصف</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td colspan="2" style="text-align:center;color:var(--text-muted)">لا توجد معاملات</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+
+</html>

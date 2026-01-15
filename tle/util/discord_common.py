@@ -14,8 +14,9 @@ from tle.util import tasks
 logger = logging.getLogger(__name__)
 
 _CF_COLORS = (0xFFCA1F, 0x198BCC, 0xFF2020)
-_SUCCESS_GREEN = 0x28A745
-_ALERT_AMBER = 0xFFBF00
+_SUCCESS_GREEN = 0x00FF7F # Spring Green
+_ALERT_AMBER = 0xFF4500 # Orange Red (more vibrant alert)
+_INFO_GOLD = 0xFFD700 # Gold for special info/admin
 
 
 def embed_neutral(desc, color=None):
@@ -23,11 +24,13 @@ def embed_neutral(desc, color=None):
 
 
 def embed_success(desc):
-    return discord.Embed(description=str(desc), color=_SUCCESS_GREEN)
+    embed = discord.Embed(description=f"✅ {desc}", color=_SUCCESS_GREEN)
+    return embed
 
 
 def embed_alert(desc):
-    return discord.Embed(description=str(desc), color=_ALERT_AMBER)
+    embed = discord.Embed(description=f"⚠️ {desc}", color=_ALERT_AMBER)
+    return embed
 
 
 def random_cf_color():

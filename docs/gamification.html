@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TLE Bot - التلعيب</title>
+    <style>
+        body {
+            background-color: #121212;
+            color: #e0e0e0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        h1,
+        h2,
+        h3 {
+            color: #ffffff;
+        }
+
+        h1 {
+            text-align: center;
+            border-bottom: 2px solid #4caf50;
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+        }
+
+        .nav {
+            background-color: #1e1e1e;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .nav a {
+            color: #e0e0e0;
+            text-decoration: none;
+            font-weight: bold;
+            padding: 5px 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .nav a:hover,
+        .nav a.active {
+            background-color: #4caf50;
+            color: #fff;
+        }
+
+        .command-block {
+            background-color: #1e1e1e;
+            padding: 20px;
+            margin-bottom: 25px;
+            border-radius: 8px;
+            border-right: 5px solid #2196f3;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        .command-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #333;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+
+        .command-name {
+            font-size: 1.4em;
+            color: #2196f3;
+            font-weight: bold;
+            font-family: monospace;
+        }
+
+        .command-desc {
+            font-size: 1.1em;
+            margin-bottom: 15px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            background-color: #252525;
+        }
+
+        th,
+        td {
+            border: 1px solid #333;
+            padding: 10px;
+            text-align: right;
+        }
+
+        th {
+            background-color: #333;
+            color: #fff;
+            width: 30%;
+        }
+
+        code {
+            background-color: #2d2d2d;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: Consolas, monospace;
+            color: #ffeb3b;
+        }
+
+        .example {
+            background-color: #000;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            font-family: monospace;
+            border-right: 3px solid #ff9800;
+        }
+
+        .section-title {
+            color: #4caf50;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+            border-bottom: 1px dashed #4caf50;
+            display: inline-block;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>🎮 أوامر التلعيب (Gamification)</h1>
+
+        <div class="nav">
+            <a href="index.html">الرئيسية</a>
+            <a href="gamification.html" class="active">التلعيب (Gamification)</a>
+            <a href="core.html">Codeforces & Contests</a>
+            <a href="admin.html">أدوات الإدارة</a>
+        </div>
+
+        <h2 class="section-title">نظام النقاط</h2>
+
+        <div class="command-block">
+            <div class="command-header">
+                <span class="command-name">;points</span>
+            </div>
+            <div class="command-desc">عرض عدد النقاط الحالي للمستخدم في نظام التلعيب.</div>
+            <div class="example">;points [مستخدم (اختياري)]</div>
+        </div>
+
+        <h2 class="section-title">نظام المبارزات (Duels)</h2>
+
+        <div class="command-block">
+            <div class="command-header">
+                <span class="command-name">;duel challenge</span>
+            </div>
+            <div class="command-desc">تحدي شخص آخر لمبارزة برمجية.</div>
+            <table>
+                <tr>
+                    <th>المعامل</th>
+                    <th>الوصف</th>
+                </tr>
+                <tr>
+                    <td>المستخدم</td>
+                    <td>الشخص الذي تريد تحديه (منشن)</td>
+                </tr>
+                <tr>
+                    <td>التقييم</td>
+                    <td>تقييم المسالة المقترح (مثلا 1200)</td>
+                </tr>
+            </table>
+            <div class="example">;duel challenge @User 1500</div>
+        </div>
+
+        <div class="command-block">
+            <div class="command-header">
+                <span class="command-name">;duel accept</span>
+            </div>
+            <div class="command-desc">قبول دعوة مبارزة واردة.</div>
+            <div class="example">;duel accept</div>
+        </div>
+
+        <div class="command-block">
+            <div class="command-header">
+                <span class="command-name">;duel complete</span>
+            </div>
+            <div class="command-desc">إنهاء المبارزة الجارية واحتساب النتيجة تلقائياً بناءً على الحلول المرسلة على
+                Codeforces.</div>
+            <div class="example">;duel complete</div>
+        </div>
+
+        <div class="command-block">
+            <div class="command-header">
+                <span class="command-name">;duel history</span>
+            </div>
+            <div class="command-desc">عرض سجل المبارزات السابق للمستخدم.</div>
+            <table>
+                <tr>
+                    <th>المعامل</th>
+                    <th>الوصف</th>
+                </tr>
+                <tr>
+                    <td>المستخدم</td>
+                    <td>(اختياري) المستخدم المراد عرض سجله</td>
+                </tr>
+            </table>
+            <div class="example">;duel history<br>;duel history @User</div>
+        </div>
+
+        <div class="command-block">
+            <div class="command-header">
+                <span class="command-name">;duel cancel</span>
+            </div>
+            <div class="command-desc">إلغاء تحدي معلق أو الانسحاب من مبارزة.</div>
+            <div class="example">;duel cancel</div>
+        </div>
+
+        <h2 class="section-title">أوامر التدريب (Gitgud)</h2>
+
+        <div class="command-block">
+            <div class="command-header">
+                <span class="command-name">;gitgud</span>
+            </div>
+            <div class="command-desc">الحصول على مسألة تدريبية لرفع مستواك.</div>
+            <table>
+                <tr>
+                    <th>المعامل</th>
+                    <th>الوصف</th>
+                </tr>
+                <tr>
+                    <td>التقييم</td>
+                    <td>(اختياري) تحديد تقييم (+/-) المسألة</td>
+                </tr>
+            </table>
+            <div class="example">;gitgud<br>;gitgud +200</div>
+        </div>
+
+        <div class="command-block">
+            <div class="command-header">
+                <span class="command-name">;gotgud</span>
+            </div>
+            <div class="command-desc">تأكيد حل مسألة gitgud الحالية واحتساب النقاط.</div>
+            <div class="example">;gotgud</div>
+        </div>
+
+        <div class="command-block">
+            <div class="command-header">
+                <span class="command-name">;nogud</span>
+            </div>
+            <div class="command-desc">تخطي مسألة gitgud الحالية (لا يحسب نقاط).</div>
+            <div class="example">;nogud</div>
+        </div>
+
+    </div>
+</body>
+
+</html>

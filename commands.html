@@ -4,208 +4,290 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TLE Bot - الدليل الرسمي الشامل المطور</title>
+    <title>دليل أوامر البوت الشامل - TLE Fork</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&family=Fira+Code:wght@400;500&display=swap"
+        rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&family=Fira+Code:wght@400;500&display=swap');
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --sidebar-bg: #1e293b;
+            --primary-color: #38bdf8;
+            --accent-color: #fbbf24;
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --success: #10b981;
+            --border-color: rgba(255, 255, 255, 0.1);
+            --code-bg: #020617;
+        }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            font-family: 'Cairo', sans-serif;
         }
 
         body {
-            font-family: 'Tajawal', sans-serif;
-            background: radial-gradient(circle at top right, #1a1a2e, #16213e, #0f3460);
-            color: #e2e8f0;
+            background-color: var(--bg-color);
+            color: var(--text-main);
             line-height: 1.6;
+            background-image:
+                radial-gradient(circle at 10% 10%, rgba(56, 189, 248, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 90% 90%, rgba(251, 191, 36, 0.05) 0%, transparent 50%);
+            background-attachment: fixed;
             min-height: 100vh;
-            padding: 20px;
         }
 
         .container {
-            max-width: 1400px;
+            max-width: 1200px;
             margin: 0 auto;
-            background: rgba(15, 15, 30, 0.9);
-            border-radius: 24px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
-            overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(20px);
+            padding: 2rem;
         }
 
         header {
-            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
-            padding: 60px 20px;
             text-align: center;
-            border-bottom: 4px solid rgba(168, 85, 247, 0.5);
+            margin-bottom: 4rem;
         }
 
         h1 {
-            font-size: 3em;
+            font-size: 2.5rem;
             font-weight: 700;
-            margin-bottom: 15px;
-            letter-spacing: -1px;
-            color: #fff;
+            margin-bottom: 1rem;
+            background: linear-gradient(to left, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .subtitle {
-            font-size: 1.25em;
-            opacity: 0.9;
-            max-width: 800px;
-            margin: 0 auto;
-            color: #e0e7ff;
+            color: var(--text-muted);
+            font-size: 1.1rem;
         }
 
-        .search-section {
-            padding: 50px 40px;
-            background: rgba(255, 255, 255, 0.02);
+        /* Search Bar */
+        .search-wrapper {
             position: sticky;
-            top: 0;
-            z-index: 1000;
-            backdrop-filter: blur(30px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            top: 2rem;
+            z-index: 100;
+            margin-bottom: 3rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
-        #searchBar {
+        #searchInput {
             width: 100%;
-            padding: 20px 30px;
-            font-size: 1.1em;
-            border: 2px solid #6366f1;
-            border-radius: 16px;
-            background: #000;
-            color: #fff;
-            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.2);
-            transition: all 0.4s ease;
-        }
-
-        #searchBar:focus {
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            border: 2px solid var(--border-color);
+            background: var(--sidebar-bg);
+            color: white;
+            font-size: 1rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(8px);
             outline: none;
-            border-color: #ec4899;
-            box-shadow: 0 0 30px rgba(236, 72, 153, 0.3);
+            transition: all 0.2s;
         }
 
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
-            gap: 30px;
-            padding: 40px;
+        #searchInput:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.2);
         }
 
-        .category-card {
-            background: rgba(30, 41, 59, 0.5);
-            border-radius: 20px;
-            padding: 30px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            height: fit-content;
+        /* Category Header */
+        .category-group {
+            margin-bottom: 4rem;
         }
 
-        .category-card:hover {
-            transform: translateY(-8px);
-            background: rgba(30, 41, 59, 0.8);
-            border-color: #6366f1;
-        }
-
-        .cat-header {
+        .category-header {
             display: flex;
             align-items: center;
-            margin-bottom: 25px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid rgba(99, 102, 241, 0.3);
+            gap: 1rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--border-color);
         }
 
-        .cat-icon {
-            font-size: 2.2em;
-            margin-left: 15px;
-            filter: drop-shadow(0 0 10px rgba(99, 102, 241, 0.5));
+        .category-header h2 {
+            font-size: 1.5rem;
+            color: var(--primary-color);
         }
 
-        .cat-title {
-            font-size: 1.7em;
-            font-weight: 700;
-            color: #818cf8;
+        /* Grid */
+        .commands-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 24px;
         }
 
-        .cmd-item {
-            background: rgba(15, 17, 26, 0.7);
-            padding: 20px;
-            margin-bottom: 20px;
-            border-radius: 12px;
-            border-right: 4px solid #a855f7;
-            position: relative;
-            overflow: hidden;
+        /* Command Card */
+        .command-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+            transition: transform 0.2s, background-color 0.2s;
+            backdrop-filter: blur(12px);
         }
 
-        .cmd-item::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 4px;
-            height: 100%;
-            background: #6366f1;
-            opacity: 0.3;
+        .command-card:hover {
+            transform: translateY(-4px);
+            background-color: rgba(30, 41, 59, 1);
+            border-color: rgba(56, 189, 248, 0.4);
         }
 
-        .cmd-name {
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .command-name {
             font-family: 'Fira Code', monospace;
-            font-size: 1.15em;
-            color: #d8b4fe;
-            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--accent-color);
             direction: ltr;
-            text-align: left;
-            margin-bottom: 10px;
-            display: block;
-        }
-
-        .cmd-desc {
-            font-size: 0.95em;
-            color: #94a3b8;
-            line-height: 1.6;
         }
 
         .badge {
-            font-size: 0.7em;
-            padding: 4px 10px;
+            padding: 4px 8px;
             border-radius: 6px;
-            margin-right: 6px;
-            font-weight: bold;
-            position: absolute;
-            top: 15px;
-            left: 15px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            background: rgba(56, 189, 248, 0.1);
+            color: var(--primary-color);
+            border: 1px solid rgba(56, 189, 248, 0.2);
         }
 
         .badge-admin {
-            background: #ef4444;
-            color: #fff;
+            background: rgba(244, 63, 94, 0.1);
+            color: #fb7185;
+            border-color: rgba(244, 63, 94, 0.2);
         }
 
-        .badge-owner {
-            background: #6366f1;
-            color: #fff;
+        .command-desc {
+            font-size: 0.95rem;
+            color: var(--text-main);
+            min-height: 2.8rem;
         }
 
-        .badge-hidden {
-            background: #475569;
-            color: #fff;
+        /* Arguments Table */
+        .args-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
         }
 
-        footer {
-            padding: 60px;
-            text-align: center;
-            color: #64748b;
-            font-size: 0.9em;
-            background: rgba(0, 0, 0, 0.2);
+        .args-table th {
+            text-align: right;
+            border-bottom: 2px solid var(--border-color);
+            padding: 8px 4px;
+            color: var(--text-muted);
         }
 
-        @media (max-width: 900px) {
-            .grid {
+        .args-table td {
+            padding: 10px 4px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        .arg-label {
+            color: var(--primary-color);
+            font-family: 'Fira Code', monospace;
+            direction: ltr;
+            display: inline-block;
+        }
+
+        /* Usage block */
+        .usage-block {
+            margin-top: auto;
+            position: relative;
+        }
+
+        .usage-title {
+            font-size: 0.75rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .code-wrapper {
+            background: var(--code-bg);
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .code-text {
+            font-family: 'Fira Code', monospace;
+            color: var(--success);
+            font-size: 0.9rem;
+            direction: ltr;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .copy-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .copy-btn:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Toast notifications */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--success);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            display: none;
+            animation: slideUp 0.3s ease-out;
+            z-index: 1000;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translate(-50%, 100%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translate(-50%, 0);
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .commands-grid {
                 grid-template-columns: 1fr;
             }
 
             h1 {
-                font-size: 2.2em;
+                font-size: 2rem;
             }
         }
     </style>
@@ -214,271 +296,701 @@
 <body>
     <div class="container">
         <header>
-            <h1>🤖 TLE Bot - المرجع الشامل</h1>
-            <p class="subtitle">كل ما تحتاجه للتحكم في البوت الأقوى للمنافسات البرمجية، مشروحاً باللغة العربية مع كافة
-                تفاصيل الأوامر.</p>
+            <h1>المرجع الكامل لأوامر TLE Bot</h1>
+            <p class="subtitle">كل ما تحتاجه للتحكم في البوت، نظام النقاط، والمبارزات</p>
         </header>
 
-        <div class="search-section">
-            <input type="text" id="searchBar" placeholder="🔍 ابحث عن أي أمر (مثلاً: duel, plot, gitgud)..."
-                autocomplete="off">
+        <div class="search-wrapper">
+            <input type="text" id="searchInput" placeholder="ابحث عن أمر، جملة، أو وصف..." onkeyup="filterCommands()">
         </div>
 
-        <div class="grid" id="mainGrid">
+        <!-- GAMIFICATION & DUELS -->
+        <div class="category-group">
+            <div class="category-header">
+                <h2>🎮 نظام الجاميفيكيشن والمبارزات</h2>
+            </div>
+            <div class="commands-grid">
+                <!-- ;points -->
+                <div class="command-card" data-tags="points نقاط رصيد gamification">
+                    <div class="card-header">
+                        <span class="command-name">;points [member]</span>
+                        <span class="badge">عام</span>
+                    </div>
+                    <p class="command-desc">عرض إجمالي النقاط التي تم تجميعها خلال الشهر الحالي بناءً على حل المسائل
+                        والمبارزات.</p>
+                    <table class="args-table">
+                        <thead>
+                            <tr>
+                                <th>الوسيط</th>
+                                <th>الوصف</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="arg-label">[member]</span></td>
+                                <td>إشارة للعضو (اختياري، الافتراضي هو أنت).</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="usage-block">
+                        <div class="usage-title">مثال للاستخدام</div>
+                        <div class="code-wrapper">
+                            <span class="code-text">;points @User</span>
+                            <button class="copy-btn" onclick="copyCode(';points @User')">📋</button>
+                        </div>
+                    </div>
+                </div>
 
-            <!-- Codeforces -->
-            <div class="category-card">
-                <div class="cat-header">
-                    <span class="cat-icon">💻</span>
-                    <h2 class="cat-title">Codeforces</h2>
+                <!-- ;duel challenge -->
+                <div class="command-card" data-tags="duel challenge مبارزة تحدي مسائل">
+                    <div class="card-header">
+                        <span class="command-name">;duel challenge &lt;opponent&gt; [rating]</span>
+                        <span class="badge">عام</span>
+                    </div>
+                    <p class="command-desc">تحدي عضو آخر في مبارزة برمجة (3-4 مسائل). تمنح 30 نقطة لكل مسألة يتم حلها.
+                    </p>
+                    <table class="args-table">
+                        <thead>
+                            <tr>
+                                <th>الوسيط</th>
+                                <th>الوصف</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="arg-label">&lt;opponent&gt;</span></td>
+                                <td>منشن للخصم الذي تريد تحديه.</td>
+                            </tr>
+                            <tr>
+                                <td><span class="arg-label">[rating]</span></td>
+                                <td>تقييم المسائل المطلوب (مثلاً: 1200).</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="usage-block">
+                        <div class="usage-title">مثال للاستخدام</div>
+                        <div class="code-wrapper">
+                            <span class="code-text">;duel challenge @Opponent 1500</span>
+                            <button class="copy-btn" onclick="copyCode(';duel challenge @Opponent 1500')">📋</button>
+                        </div>
+                    </div>
                 </div>
-                <div class="cmd-item">
-                    <span class="cmd-name">;gitgud [delta]</span>
-                    <p class="cmd-desc">طلب مسألة مخصصة لرفع مستواك. الدلتا تتحكم في صعوبة المسألة.</p>
+
+                <!-- ;duel accept -->
+                <div class="command-card" data-tags="duel accept قبول مبارزة">
+                    <div class="card-header">
+                        <span class="command-name">;duel accept</span>
+                        <span class="badge">عام</span>
+                    </div>
+                    <p class="command-desc">قبول طلب مبارزة مقدم إليك من قبل عضو آخر لبدء المنافسة فوراً.</p>
+                    <table class="args-table">
+                        <thead>
+                            <tr>
+                                <th>الوسيط</th>
+                                <th>الوصف</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="2" style="text-align: center; color: var(--text-muted)">لا توجد معاملات
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="usage-block">
+                        <div class="usage-title">مثال للاستخدام</div>
+                        <div class="code-wrapper">
+                            <span class="code-text">;duel accept</span>
+                            <button class="copy-btn" onclick="copyCode(';duel accept')">📋</button>
+                        </div>
+                    </div>
                 </div>
-                <div class="cmd-item">
-                    <span class="cmd-name">;gotgud</span>
-                    <p class="cmd-desc">أنهِ التحدي الحالي واحصل على نقاط التقييم.</p>
-                </div>
-                <div class="cmd-item">
-                    <span class="cmd-name">;upsolve [choice]</span>
-                    <p class="cmd-desc">الحصول على مسائل لم تحلها من مسابقات سابقة شاركت فيها.</p>
-                </div>
-                <div class="cmd-item">
-                    <span class="cmd-name">;stalk [handle]</span>
-                    <p class="cmd-desc">عرض تفصيلي لآخر مسائل قام المستخدم بحلها.</p>
-                </div>
-                <div class="cmd-item">
-                    <span class="cmd-name">;mashup [handles...]</span>
-                    <p class="cmd-desc">توليد مسابقة Mashup مخصصة لمجموعة من الأعضاء.</p>
-                </div>
-                <div class="cmd-item">
-                    <span class="cmd-name">;teamrate [handles...]</span>
-                    <p class="cmd-desc">حساب التقييم المتوقع لفريق مكون من عدة أشخاص.</p>
+
+                <!-- ;duel complete -->
+                <div class="command-card" data-tags="duel complete إنهاء مبارزة">
+                    <div class="card-header">
+                        <span class="command-name">;duel complete</span>
+                        <span class="badge">عام</span>
+                    </div>
+                    <p class="command-desc">تأكيد إنهاء المبارزة وحساب النتائج (يجب كتابته من قبل الطرفين).</p>
+                    <table class="args-table">
+                        <thead>
+                            <tr>
+                                <th>الوسيط</th>
+                                <th>الوصف</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="2" style="text-align: center; color: var(--text-muted)">لا توجد معاملات
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="usage-block">
+                        <div class="usage-title">مثال للاستخدام</div>
+                        <div class="code-wrapper">
+                            <span class="code-text">;duel complete</span>
+                            <button class="copy-btn" onclick="copyCode(';duel complete')">📋</button>
+                        </div>
+                    </div>
                 </div>
             </div>
-
-            <!-- Duels -->
-            <div class="category-card">
-                <div class="cat-header">
-                    <span class="cat-icon">⚔️</span>
-                    <h2 class="cat-title">المبارزات (Duels)</h2>
-                </div>
-                <div class="cmd-item">
-                    <span class="cmd-name">;duel challenge @opponent [rating]</span>
-                    <p class="cmd-desc">تحدي شخص في مبارزة سريعة 1 ضد 1.</p>
-                </div>
-                <div class="cmd-item">
-                    <span class="cmd-name">;duel accept</span>
-                    <p class="cmd-desc">قبول تحدي مبارزة قائم.</p>
-                </div>
-                <div class="cmd-item">
-                    <span class="cmd-name">;duel complete</span>
-                    <p class="cmd-desc">إنهاء المبارزة وإعلان الفائز بعد التحقق من الحل.</p>
-                </div>
-                <div class="cmd-item">
-                    <span class="cmd-name">;duel profile [@user]</span>
-                    <p class="cmd-desc">مشاهدة إحصائياتك وتقييمك في نظام المبارزات.</p>
-                </div>
-                <div class="cmd-item">
-                    <span class="cmd-name">;duel ranklist</span>
-                    <p class="cmd-desc">ترتيب السيرفر لأفضل المبارزين (أساطير المبارزة).</p>
-                </div>
-                <div class="cmd-item">
-                    <span class="cmd-name">;duel history [@user]</span>
-                    <p class="cmd-desc">عرض تاريخ المبارزات الماضي بالكامل.</p>
-                </div>
-            </div>
-
-            <!-- Graphs & Plotting -->
-            <div class="category-card">
-                <div class="cat-header">
-                    <span class="cat-icon">📊</span>
-                    <h2 class="cat-title">الرسوم البيانية</h2>
-                </div>
-                <div class="cmd-item">
-                    <span class="cmd-name">;plot rating [handles]</span>
-                    <p class="cmd-desc">منحنى تطور التقييم على كود فورسيز.</p>
-                </div>
-                <div class="cmd-item">
-                    <span class="cmd-name">;plot solved [handle]</span>
-                    <p class="cmd-desc">توزيع المسائل المحلولة حسب الصعوبة والتاغات.</p>
-                </div>
-                <div class="cmd-item">
-                    <span class="cmd-name">;plot performance [handle]</span>
-                    <p class="cmd-desc">توضيح مستوى الأداء في كل مسابقة مقارنة بالآخرين.</p>
-                </div>
-                <div class="cmd-item">
-                    <span class="cmd-name">;plot distrib</span>
-                    <p class="cmd-desc">توزيع الأعضاء في السيرفر حسب رتبهم البرمجية.</p>
-                </div>
-                <div class="cmd-item">
-                    <span class="cmd-name">;plot scatter [handle]</span>
-                    <p class="cmd-desc">توضيح سرعة الحل مقابل الصعوبة لكل المسائل.</p>
-                </div>
-                <div class="cmd-item">
-                    <span class="cmd-name">;plot visualrank [id]</span>
-                    <p class="cmd-desc">تمثيل مرئي لترتيب المسابقة مع إبراز أعضاء السيرفر.</p>
-                </div>
-            </div>
-
-            <!-- Membership -->
-            <div class="category-card">
-                <div class="cat-header">
-                    <span class="cat-icon">👤</span>
-                    <h2 class="cat-title">إدارة الحسابات</h2>
-                </div>
-                <div class="cmd-item">
-                    <span class="cmd-name">;handle identify [handle]</span>
-                    <p class="cmd-desc">ربط حسابك في كود فورسيز أو أت كودار بهويتك في الديسكورد.</p>
-                </div>
-                <div class="cmd-item">
-                    <span class="cmd-name">;handle pretty [resource]</span>
-                    <p class="cmd-desc">عرض جميل للـ Handles المربوطة بالألوان الرسمية.</p>
-                </div>
-                <div class="cmd-item">
-                    <span class="cmd-name">;handle list</span>
-                    <p class="cmd-desc">قائمة بجميع المشتركين المربوطين في السيرفر.</p>
-                </div>
-                <div class="cmd-item">
-                    <span class="cmd-name">;handle status [member]</span>
-                    <p class="cmd-desc">تحديث رتب الديسكورد يدوياً لهذا المستخدم.</p>
-                </div>
-            </div>
-
-            <!-- Lists -->
-            <div class="category-card">
-                <div class="cat-header">
-                    <span class="cat-icon">📝</span>
-                    <h2 class="cat-title">إدارة القوائم</h2>
-                </div>
-                <div class="cmd-item">
-                    <span class="cmd-name">;list create [name]</span>
-                    <span class="badge badge-admin">ADMIN</span>
-                    <p class="cmd-desc">إنشاء قائمة مخصصة لجمع حسابات معينة.</p>
-                </div>
-                <div class="cmd-item">
-                    <span class="cmd-name">;list add [name] [res] [handles]</span>
-                    <p class="cmd-desc">إضافة حسابات إلى قائمة موجودة مسبقاً.</p>
-                </div>
-                <div class="cmd-item">
-                    <span class="cmd-name">;list view [name] [res]</span>
-                    <p class="cmd-desc">عرض إحصائيات التقييم لجميع المشتركين في القائمة.</p>
-                </div>
-                <div class="cmd-item">
-                    <span class="cmd-name">;list all</span>
-                    <p class="cmd-desc">عرض أسماء جميع القوائم المتوفرة في السيرفر.</p>
-                </div>
-            </div>
-
-            <!-- Reminders -->
-            <div class="category-card">
-                <div class="cat-header">
-                    <span class="cat-icon">🔔</span>
-                    <h2 class="cat-title">التذكيرات</h2>
-                </div>
-                <div class="cmd-item">
-                    <span class="cmd-name">;remind on | off</span>
-                    <p class="cmd-desc">تفعيل أو تعطيل التذكيرات التلقائية للمسابقات.</p>
-                </div>
-                <div class="cmd-item">
-                    <span class="cmd-name">;remind subscribe</span>
-                    <p class="cmd-desc">اختيار المنصات التي تود الحصول على تنبيهات لها.</p>
-                </div>
-                <div class="cmd-item">
-                    <span class="cmd-name">;remind settz [offset]</span>
-                    <p class="cmd-desc">تحديد منطقتك الزمنية لضمان دقة مواعيد التنبيهات.</p>
-                </div>
-                <div class="cmd-item">
-                    <span class="cmd-name">;remind settings</span>
-                    <p class="cmd-desc">عرض تفضيلات التذكير الحالية الخاصة بك.</p>
-                </div>
-            </div>
-
-            <!-- Automation & Admin -->
-            <div class="category-card">
-                <div class="cat-header">
-                    <span class="cat-icon">🛡️</span>
-                    <h2 class="cat-title">الإشراف والأتمتة</h2>
-                </div>
-                <div class="cmd-item">
-                    <span class="cmd-name">;setup_auto [#channel]</span>
-                    <span class="badge badge-admin">ADMIN</span>
-                    <p class="cmd-desc">تعيين قناة لنشر ترتيب السيرفر أسبوعياً وشهرياً.</p>
-                </div>
-                <div class="cmd-item">
-                    <span class="cmd-name">;cache update all</span>
-                    <span class="badge badge-admin">ADMIN</span>
-                    <p class="cmd-desc">تحديث كاش البوت (المسائل والمسابقات) يدوياً.</p>
-                </div>
-                <div class="cmd-item">
-                    <span class="cmd-name">;starboard here</span>
-                    <span class="badge badge-admin">ADMIN</span>
-                    <p class="cmd-desc">تحويل القناة الحالية إلى Starboard لحفظ الرسائل المميزة.</p>
-                </div>
-                <div class="cmd-item">
-                    <span class="cmd-name">;roleupdate auto on|off</span>
-                    <span class="badge badge-admin">ADMIN</span>
-                    <p class="cmd-desc">تفعيل نظام تحديث الرتب التلقائي عند تغير التقييم.</p>
-                </div>
-            </div>
-
-            <!-- Meta & Info -->
-            <div class="category-card">
-                <div class="cat-header">
-                    <span class="cat-icon">ℹ️</span>
-                    <h2 class="cat-title">النظام والمعلومات</h2>
-                </div>
-                <div class="cmd-item">
-                    <span class="cmd-name">;meta ping</span>
-                    <p class="cmd-desc">فحص استجابة البوت مع الديسكورد وسرعة الربط مع API.</p>
-                </div>
-                <div class="cmd-item">
-                    <span class="cmd-name">;meta uptime</span>
-                    <p class="cmd-desc">الزمن الكلي الذي قضاه البوت قيد التشغيل دون توقف.</p>
-                </div>
-                <div class="cmd-item">
-                    <span class="cmd-name">;meta help_arabic</span>
-                    <p class="cmd-desc">إرشاد المستخدمين إلى هذا الدليل العربي الشامل.</p>
-                </div>
-                <div class="cmd-item">
-                    <span class="cmd-name">;meta restart</span>
-                    <span class="badge badge-owner">OWNER</span>
-                    <p class="cmd-desc">إعادة تشغيل البوت (للمالك فقط).</p>
-                </div>
-            </div>
-
         </div>
 
-        <footer>
-            <p>TLE Bot Official Documentation &copy; 2026 - Crafted for competitive programming communities</p>
-            </header>
+        <!-- CODEFORCES INFO SECTION -->
+        <div class="category-group">
+            <div class="category-header">
+                <h2>📊 بيانات كودفورس (CF Info)</h2>
+            </div>
+            <div class="commands-grid">
+                <div class="command-card" data-tags="cf user userinfo معلومات مستخدم">
+                    <div class="card-header">
+                        <span class="command-name">;cf user &lt;handle&gt;</span>
+                        <span class="badge">عام</span>
+                    </div>
+                    <p class="command-desc">عرض معلومات مفصلة عن مستخدم كودفورس (الرتبة، التقييم، الدولة، ومساهماته).
+                    </p>
+                    <table class="args-table">
+                        <thead>
+                            <tr>
+                                <th>الوسيط</th>
+                                <th>الوصف</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="arg-label">&lt;handle&gt;</span></td>
+                                <td>اسم حساب المستخدم في Codeforces.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="usage-block">
+                        <div class="usage-title">مثال للاستخدام</div>
+                        <div class="code-wrapper">
+                            <span class="code-text">;cf user tourist</span>
+                            <button class="copy-btn" onclick="copyCode(';cf user tourist')">📋</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="command-card" data-tags="cf rating تقييم">
+                    <div class="card-header">
+                        <span class="command-name">;cf rating &lt;handle&gt;</span>
+                        <span class="badge">عام</span>
+                    </div>
+                    <p class="command-desc">التحقق السريع من التقييم الحالي (Current Rating) وأعلى تقييم وصل له
+                        المستخدم.</p>
+                    <table class="args-table">
+                        <thead>
+                            <tr>
+                                <th>الوسيط</th>
+                                <th>الوصف</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="arg-label">&lt;handle&gt;</span></td>
+                                <td>اسم المعرف في كودفورس.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="usage-block">
+                        <div class="usage-title">مثال للاستخدام</div>
+                        <div class="code-wrapper">
+                            <span class="code-text">;cf rating Petr</span>
+                            <button class="copy-btn" onclick="copyCode(';cf rating Petr')">📋</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CONTESTS SECTION -->
+        <div class="category-group">
+            <div class="category-header">
+                <h2>🏆 مسابقات وتواريخ (Contests)</h2>
+            </div>
+            <div class="commands-grid">
+                <div class="command-card" data-tags="contest list مسابقات">
+                    <div class="card-header">
+                        <span class="command-name">;contest list</span>
+                        <span class="badge">عام</span>
+                    </div>
+                    <p class="command-desc">عرض قائمة بالمسابقات القادمة على منصة كودفورس والمنصات الأخرى.</p>
+                    <table class="args-table">
+                        <thead>
+                            <tr>
+                                <th>الوسيط</th>
+                                <th>الوصف</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="2" style="text-align: center; color: var(--text-muted)">لا توجد معاملات
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="usage-block">
+                        <div class="usage-title">مثال للاستخدام</div>
+                        <div class="code-wrapper">
+                            <span class="code-text">;contest list</span>
+                            <button class="copy-btn" onclick="copyCode(';contest list')">📋</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="command-card" data-tags="contest history تاريخ">
+                    <div class="card-header">
+                        <span class="command-name">;contest history &lt;handle&gt;</span>
+                        <span class="badge">عام</span>
+                    </div>
+                    <p class="command-desc">عرض تاريخ مشاركات المستخدم في المسابقات السابقة ونتائجه فيها.</p>
+                    <table class="args-table">
+                        <thead>
+                            <tr>
+                                <th>الوسيط</th>
+                                <th>الوصف</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="arg-label">&lt;handle&gt;</span></td>
+                                <td>اسم المعرف في كودفورس.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="usage-block">
+                        <div class="usage-title">مثال للاستخدام</div>
+                        <div class="code-wrapper">
+                            <span class="code-text">;contest history tourist</span>
+                            <button class="copy-btn" onclick="copyCode(';contest history tourist')">📋</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TRAINING SECTION -->
+        <div class="category-group">
+            <div class="category-header">
+                <h2>🎯 نظام التدريب (Gitgud)</h2>
+            </div>
+            <div class="commands-grid">
+                <div class="command-card" data-tags="gitgud طلب مسألة">
+                    <div class="card-header">
+                        <span class="command-name">;gitgud [rating]</span>
+                        <span class="badge">عام</span>
+                    </div>
+                    <p class="command-desc">طلب مسألة تدريبية عشوائية تناسب مستواك أو حسب التقييم المحدد.</p>
+                    <table class="args-table">
+                        <thead>
+                            <tr>
+                                <th>الوسيط</th>
+                                <th>الوصف</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="arg-label">[rating]</span></td>
+                                <td>تقييم المسألة المطلوبة (اختياري).</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="usage-block">
+                        <div class="usage-title">مثال للاستخدام</div>
+                        <div class="code-wrapper">
+                            <span class="code-text">;gitgud 1600</span>
+                            <button class="copy-btn" onclick="copyCode(';gitgud 1600')">📋</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="command-card" data-tags="gotgud تم الحل">
+                    <div class="card-header">
+                        <span class="command-name">;gotgud</span>
+                        <span class="badge">عام</span>
+                    </div>
+                    <p class="command-desc">تأكيد حل المسألة التي طلبتها للحصول على نقاط التقييم الخاصة بالبوت.</p>
+                    <table class="args-table">
+                        <thead>
+                            <tr>
+                                <th>الوسيط</th>
+                                <th>الوصف</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="2" style="text-align: center; color: var(--text-muted)">لا توجد معاملات
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="usage-block">
+                        <div class="usage-title">مثال للاستخدام</div>
+                        <div class="code-wrapper">
+                            <span class="code-text">;gotgud</span>
+                            <button class="copy-btn" onclick="copyCode(';gotgud')">📋</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- AUTOMATION SECTION -->
+        <div class="category-group">
+            <div class="category-header">
+                <h2>🤖 أنظمة الأتمتة (Automation)</h2>
+            </div>
+            <div class="commands-grid">
+                <div class="command-card" data-tags="weekly standings ترتيب أسبوعي automation">
+                    <div class="card-header">
+                        <span class="command-name">;weekly_standings &lt;role&gt;</span>
+                        <span class="badge badge-admin">مشرف فقط</span>
+                    </div>
+                    <p class="command-desc">ربط القناة الحالية لعرض الترتيب الأسبوعي لرتبة معينة تلقائياً كل جمعة.</p>
+                    <table class="args-table">
+                        <thead>
+                            <tr>
+                                <th>الوسيط</th>
+                                <th>الوصف</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="arg-label">&lt;role&gt;</span></td>
+                                <td>اسم الرتبة أو منشن لها (مثال: G15).</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="usage-block">
+                        <div class="usage-title">مثال للاستخدام</div>
+                        <div class="code-wrapper">
+                            <span class="code-text">;weekly_standings G10</span>
+                            <button class="copy-btn" onclick="copyCode(';weekly_standings G10')">📋</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="command-card" data-tags="master channel قناة رئيسية automation">
+                    <div class="card-header">
+                        <span class="command-name">;master_channel</span>
+                        <span class="badge badge-admin">مشرف فقط</span>
+                    </div>
+                    <p class="command-desc">تعيين القناة الحالية كقناة الإعلانات الرئيسية للترقيات، نتائج الشهر،
+                        وتنبيهات التصفير.</p>
+                    <table class="args-table">
+                        <thead>
+                            <tr>
+                                <th>الوسيط</th>
+                                <th>الوصف</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="2" style="text-align: center; color: var(--text-muted)">لا توجد معاملات
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="usage-block">
+                        <div class="usage-title">مثال للاستخدام</div>
+                        <div class="code-wrapper">
+                            <span class="code-text">;master_channel</span>
+                            <button class="copy-btn" onclick="copyCode(';master_channel')">📋</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ADMIN TOOLS -->
+        <div class="category-group">
+            <div class="category-header">
+                <h2>⚙️ أدوات الإدارة (Admin Tools)</h2>
+            </div>
+            <div class="commands-grid">
+                <div class="command-card" data-tags="init roles تهيئة رتب admin">
+                    <div class="card-header">
+                        <span class="command-name">;init_roles</span>
+                        <span class="badge badge-admin">مشرف فقط</span>
+                    </div>
+                    <p class="command-desc">إنشاء وتهيئة رتب السيرفر تلقائياً (G1-G20) وتهيئة رتبة ADMIN باللون الذهبي.
+                    </p>
+                    <table class="args-table">
+                        <thead>
+                            <tr>
+                                <th>الوسيط</th>
+                                <th>الوصف</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="2" style="text-align: center; color: var(--text-muted)">لا توجد معاملات
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="usage-block">
+                        <div class="usage-title">مثال للاستخدام</div>
+                        <div class="code-wrapper">
+                            <span class="code-text">;init_roles</span>
+                            <button class="copy-btn" onclick="copyCode(';init_roles')">📋</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ANALYTICS SECTION -->
+        <div class="category-group">
+            <div class="category-header">
+                <h2>📈 التحليلات والمقارنات (Analytics)</h2>
+            </div>
+            <div class="commands-grid">
+                <div class="command-card" data-tags="compare مقارنة">
+                    <div class="card-header">
+                        <span class="command-name">;compare &lt;h1&gt; &lt;h2&gt;</span>
+                        <span class="badge">عام</span>
+                    </div>
+                    <p class="command-desc">مقارنة إحصائيات مستخدمين اثنين (التقييم، الرتبة، عدد المسائل المحلولة).</p>
+                    <table class="args-table">
+                        <thead>
+                            <tr>
+                                <th>الوسيط</th>
+                                <th>الوصف</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="arg-label">&lt;h1&gt;, &lt;h2&gt;</span></td>
+                                <td>معرفات مستخدمي كودفورس.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="usage-block">
+                        <div class="usage-title">مثال للاستخدام</div>
+                        <div class="code-wrapper">
+                            <span class="code-text">;compare Petr tourist</span>
+                            <button class="copy-btn" onclick="copyCode(';compare Petr tourist')">📋</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="command-card" data-tags="plot rating رسم بياني">
+                    <div class="card-header">
+                        <span class="command-name">;plot rating [handles...]</span>
+                        <span class="badge">عام</span>
+                    </div>
+                    <p class="command-desc">رسم بياني يوضح تاريخ تغير التقييم لمجموعة من المستخدمين.</p>
+                    <table class="args-table">
+                        <thead>
+                            <tr>
+                                <th>الوسيط</th>
+                                <th>الوصف</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="arg-label">[handles...]</span></td>
+                                <td>المعرفات المطلوب رسمها (اختياري).</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="usage-block">
+                        <div class="usage-title">مثال للاستخدام</div>
+                        <div class="code-wrapper">
+                            <span class="code-text">;plot rating tourist Petr</span>
+                            <button class="copy-btn" onclick="copyCode(';plot rating tourist Petr')">📋</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- HANDLES SECTION -->
+        <div class="category-group">
+            <div class="category-header">
+                <h2>👤 إدارة الحسابات (Handles)</h2>
+            </div>
+            <div class="commands-grid">
+                <div class="command-card" data-tags="handle identify تعريف">
+                    <div class="card-header">
+                        <span class="command-name">;handle identify &lt;handle&gt;</span>
+                        <span class="badge">عام</span>
+                    </div>
+                    <p class="command-desc">ربط حساب ديسكورد بحساب كودفورس عبر إرسال كود تجميعي.</p>
+                    <table class="args-table">
+                        <thead>
+                            <tr>
+                                <th>الوسيط</th>
+                                <th>الوصف</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="arg-label">&lt;handle&gt;</span></td>
+                                <td>اسم المعرف في Codeforces.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="usage-block">
+                        <div class="usage-title">مثال للاستخدام</div>
+                        <div class="code-wrapper">
+                            <span class="code-text">;handle identify MyHandle</span>
+                            <button class="copy-btn" onclick="copyCode(';handle identify MyHandle')">📋</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="command-card" data-tags="handle set تعيين">
+                    <div class="card-header">
+                        <span class="command-name">;handle set &lt;member&gt; &lt;handle&gt;</span>
+                        <span class="badge badge-admin">مشرف فقط</span>
+                    </div>
+                    <p class="command-desc">ربط يدوي لعضو بمعرف كودفورس (للمشرفين).</p>
+                    <table class="args-table">
+                        <thead>
+                            <tr>
+                                <th>الوسيط</th>
+                                <th>الوصف</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="arg-label">&lt;member&gt;</span></td>
+                                <td>العضو المستهدف.</td>
+                            </tr>
+                            <tr>
+                                <td><span class="arg-label">&lt;handle&gt;</span></td>
+                                <td>المعرف في كودفورس.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="usage-block">
+                        <div class="usage-title">مثال للاستخدام</div>
+                        <div class="code-wrapper">
+                            <span class="code-text">;handle set @User tourist</span>
+                            <button class="copy-btn" onclick="copyCode(';handle set @User tourist')">📋</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- STARBOARD SECTION -->
+        <div class="category-group">
+            <div class="category-header">
+                <h2>⭐ الإشارات المميزة (Starboard)</h2>
+            </div>
+            <div class="commands-grid">
+                <div class="command-card" data-tags="starboard setup ستار بورد">
+                    <div class="card-header">
+                        <span class="command-name">;starboard here</span>
+                        <span class="badge badge-admin">مشرف فقط</span>
+                    </div>
+                    <p class="command-desc">تعيين القناة الحالية كقناة الستار بورد لعرض الرسائل المميزة بنجوم.</p>
+                    <table class="args-table">
+                        <thead>
+                            <tr>
+                                <th>الوسيط</th>
+                                <th>الوصف</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="2" style="text-align: center; color: var(--text-muted)">لا توجد معاملات
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="usage-block">
+                        <div class="usage-title">مثال للاستخدام</div>
+                        <div class="code-wrapper">
+                            <span class="code-text">;starboard here</span>
+                            <button class="copy-btn" onclick="copyCode(';starboard here')">📋</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- LISTS SECTION -->
+        <div class="category-group">
+            <div class="category-header">
+                <h2>📝 القوائم المخصصة (Lists)</h2>
+            </div>
+            <div class="commands-grid">
+                <div class="command-card" data-tags="list add إضافة">
+                    <div class="card-header">
+                        <span class="command-name">;list add &lt;name&gt; &lt;res&gt; &lt;handles...&gt;</span>
+                        <span class="badge">عام</span>
+                    </div>
+                    <p class="command-desc">إضافة معرفات لقائمة لمتابعة نشاطهم. استخدم "none" في خانة التصفية.</p>
+                    <table class="args-table">
+                        <thead>
+                            <tr>
+                                <th>الوسيط</th>
+                                <th>الوصف</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="arg-label">&lt;name&gt;</span></td>
+                                <td>اسم القائمة.</td>
+                            </tr>
+                            <tr>
+                                <td><span class="arg-label">&lt;res&gt;</span></td>
+                                <td>"none" أو Regex للفلاتر.</td>
+                            </tr>
+                            <tr>
+                                <td><span class="arg-label">&lt;handles...&gt;</span></td>
+                                <td>قائمة المعرفات.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="usage-block">
+                        <div class="usage-title">مثال للاستخدام</div>
+                        <div class="code-wrapper">
+                            <span class="code-text">;list add my_team none tourist Petr</span>
+                            <button class="copy-btn"
+                                onclick="copyCode(';list add my_team none tourist Petr')">📋</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
+    <div id="toast" class="toast">تم النسخ إلى الحافظة!</div>
+
     <script>
-        const searchBar = document.getElementById('searchBar');
-        const cards = document.querySelectorAll('.category-card');
+        function filterCommands() {
+            const input = document.getElementById('searchInput');
+            const filter = input.value.toLowerCase();
+            const cards = document.getElementsByClassName('command-card');
+            const groups = document.getElementsByClassName('category-group');
 
-        searchBar.addEventListener('input', (e) => {
-            const term = e.target.value.toLowerCase();
-            cards.forEach(card => {
-                let cardVisible = false;
-                const items = card.querySelectorAll('.cmd-item');
-                const catTitle = card.querySelector('.cat-title').innerText.toLowerCase();
+            for (let card of cards) {
+                const text = card.textContent.toLowerCase() + card.getAttribute('data-tags');
+                if (text.includes(filter)) {
+                    card.style.display = "";
+                } else {
+                    card.style.display = "none";
+                }
+            }
 
-                if (catTitle.includes(term)) cardVisible = true;
+            // Hide empty categories
+            for (let group of groups) {
+                const visible = group.querySelectorAll('.command-card[style=""]').length;
+                group.style.display = visible > 0 || filter === "" ? "" : "none";
+            }
+        }
 
-                items.forEach(item => {
-                    if (item.innerText.toLowerCase().includes(term)) {
-                        item.style.display = 'block';
-                        cardVisible = true;
-                    } else {
-                        item.style.display = 'none';
-                    }
-                });
-                card.style.display = cardVisible ? 'block' : 'none';
+        function copyCode(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                const toast = document.getElementById('toast');
+                toast.style.display = 'block';
+                setTimeout(() => {
+                    toast.style.display = 'none';
+                }, 2000);
             });
-        });
+        }
     </script>
 </body>
 
