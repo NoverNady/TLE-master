@@ -13,14 +13,16 @@ class AdminTools(commands.Cog):
 
     @commands.command(brief="Initialize server roles (G1-G20, Admins)")
     @commands.has_permissions(administrator=True)
+    @commands.command(brief="Initialize server roles (G1-G20, Admins)")
+    @commands.has_permissions(administrator=True)
     async def init_roles(self, ctx):
         """
-        تهيئة الأدوار الخاصة بالسيرفر تلقائياً:
-        - أدوار المجموعات: G1 إلى G20
-        - أدوار المشرفين: Admin G1 إلى Admin G20
-        - الدور الرئيسي: ADMIN (باللون الذهبي المميز)
+        Automatically initialize server roles:
+        - Group roles: G1 to G20
+        - Admin roles: Admin G1 to Admin G20
+        - Master Role: ADMIN (Gold color)
         """
-        status_msg = await ctx.send("جاري تهيئة الرتب... يرجى الانتظار.")
+        status_msg = await ctx.send("Initializing roles... Please wait.")
         
         # 1. Master Admin Role (Gold)
         gold_color = discord.Color.from_rgb(255, 215, 0)
@@ -30,7 +32,7 @@ class AdminTools(commands.Cog):
                 master_admin_role = await ctx.guild.create_role(name="ADMIN", color=gold_color, reason="Setup gamified system", hoist=True)
                 self.logger.info(f"Created role ADMIN in {ctx.guild.name}")
             except Exception as e:
-                await ctx.send(f"خطأ أثناء إنشاء رتبة ADMIN: {e}")
+                await ctx.send(f"Error creating ADMIN role: {e}")
         else:
             # Ensure color is Gold
             if master_admin_role.color != gold_color:
@@ -59,10 +61,10 @@ class AdminTools(commands.Cog):
                     self.logger.warning(f"Failed to create role {admin_group_name}: {e}")
 
         embed = discord_common.embed_success(
-            f"✅ تم الانتهاء من تهيئة الرتب بنجاح!\\n"
-            f"- تم تفعيل رتبة **ADMIN** باللون الذهبي.\\n"
-            f"- تم تفعيل الرتب من **G1** إلى **G20**.\\n"
-            f"- تم تفعيل رتب المشرفين من **Admin G1** إلى **Admin G20**."
+            f"✅ Role initialization completed successfully!\n"
+            f"- **ADMIN** role set to Gold.\n"
+            f"- Roles **G1** to **G20** active.\n"
+            f"- Admin roles **Admin G1** to **Admin G20** active."
         )
         await status_msg.edit(content=None, embed=embed)
 

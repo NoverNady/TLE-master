@@ -1,0 +1,12 @@
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.git
+.env
+.vscode
+.idea
+data/
+logs/
+audit_report.html
+task.md

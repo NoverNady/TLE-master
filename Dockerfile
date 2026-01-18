@@ -1,30 +1,25 @@
-FROM python:3.11-slim-bookworm
+FROM python:3.10-slim
 
-WORKDIR /TLE
-
-# Install system dependencies
+# Install system dependencies required for matplotlib and general build tools
 RUN apt-get update && apt-get install -y \
-    git \
-    sqlite3 \
-    libcairo2-dev \
-    libgirepository1.0-dev \
-    libpango1.0-dev \
-    pkg-config \
-    python3-dev \
-    gir1.2-pango-1.0 \
-    build-essential \
-    libjpeg-dev \
-    zlib1g-dev \
+    gcc \
+    g++ \
+    libfreetype6-dev \
+    libpng-dev \
+    libffi-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Install python dependencies
-COPY ./requirements.txt .
+WORKDIR /app
+
+# Create the data/db directory structure so the code finds it
+RUN mkdir -p /app/data/db
+
+# Copy requirements first to leverage Docker cache
+COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy source
+# Copy the rest of the application code
 COPY . .
 
-# Run script
-RUN chmod +x run.sh
-
-ENTRYPOINT ["/TLE/run.sh"]
+# Run the bot
+CMD ["python", "-m", "tle"]

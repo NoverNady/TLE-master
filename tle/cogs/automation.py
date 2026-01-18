@@ -48,17 +48,17 @@ class Automation(commands.Cog):
     @commands.command(brief='Bind channel for weekly standings of a specific role')
     @commands.has_permissions(administrator=True)
     async def weekly_standings(self, ctx, role: discord.Role):
-        """ربط القناة الحالية لعرض الترتيب الأسبوعي لرتبة معينة (كل جمعة الساعة 12:00 ظهراً)."""
+        """Bind current channel for weekly standings of a specific role (Every Friday at 12:00 PM)."""
         self._set_setting(ctx.guild.id, 'weekly', ctx.channel.id, role.name)
-        embed = discord_common.embed_success(f"✅ تم ربط القناة برتبة **{role.name}** لعرض الترتيب الأسبوعي.")
+        embed = discord_common.embed_success(f"✅ Channel bound to **{role.name}** for weekly standings.")
         await ctx.send(embed=embed)
 
     @commands.command(brief='Set current channel as Master Event Channel')
     @commands.has_permissions(administrator=True)
     async def master_channel(self, ctx):
-        """تعيين القناة الحالية كقناة الإعلانات الرئيسية للترتيب العالمي والترقيات."""
+        """Set the current channel as the Master Channel for global standings and rank upgrades."""
         self._set_setting(ctx.guild.id, 'master', ctx.channel.id)
-        embed = discord_common.embed_success("🏆 تم تعيين القناة كـ **قناة الإعلانات الرئيسية**.")
+        embed = discord_common.embed_success("🏆 Channel set as **Master Event Channel**.")
         await ctx.send(embed=embed)
 
     @tasks.loop(time=datetime.time(hour=10, minute=0, tzinfo=pytz.UTC)) # Friday 12:00 PM Cairo
@@ -85,7 +85,7 @@ class Automation(commands.Cog):
             filtered_users.sort(key=lambda x: x[1].rating or 0, reverse=True)
             
             embed = self._create_standings_embed(
-                f"📊 الترتيب الأسبوعي - {role_name}",
+                f"📊 Weekly Standings - {role_name}",
                 filtered_users[:10],
                 guild
             )
@@ -107,7 +107,7 @@ class Automation(commands.Cog):
             users.sort(key=lambda x: x[1].rating or 0, reverse=True)
             
             embed = self._create_standings_embed(
-                f"🌍 الترتيب الشهري العالمي - {datetime.datetime.now().strftime('%B %Y')}",
+                f"🌍 Global Monthly Standings - {datetime.datetime.now().strftime('%B %Y')}",
                 users[:20],
                 guild
             )
@@ -144,8 +144,8 @@ class Automation(commands.Cog):
                         
                         if master_channel and user.rating:
                             embed = discord_common.embed_success(
-                                f"🎉 **{member.display_name}** تم ترفيعه إلى رتبة **{new_rank}**!\\n"
-                                f"التقييم الجديد: **{user.rating}**"
+                                f"🎉 **{member.display_name}** promoted to **{new_rank}**!\n"
+                                f"New Rating: **{user.rating}**"
                             )
                             if member.avatar: embed.set_thumbnail(url=member.avatar.url)
                             await master_channel.send(embed=embed)
@@ -156,7 +156,7 @@ class Automation(commands.Cog):
     def _create_standings_embed(self, title, users_data, guild):
         embed = discord.Embed(title=title, color=discord.Color.blue(), timestamp=datetime.datetime.utcnow())
         if not users_data:
-            embed.description = "لا يوجد بيانات متاحة حالياً."
+            embed.description = "No data available."
             return embed
         
         lines = []

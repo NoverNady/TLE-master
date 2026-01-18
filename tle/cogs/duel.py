@@ -69,21 +69,21 @@ class Dueling(commands.Cog):
 
     @commands.group(brief='Duel commands', invoke_without_command=True)
     async def duel(self, ctx):
-        """مجموعة أوامر المبارزات."""
+        """Duel commands group."""
         await ctx.send_help(ctx.command)
 
     @duel.command(brief='Challenge to a multi-problem duel')
     async def challenge(self, ctx, opponent: discord.Member, rating: int = None):
-        """تحدي عضو آخر في مبارزة برمجة (3-4 مسائل)."""
+        """Challenge another member to a coding duel (3-4 problems)."""
         challenger_id = ctx.author.id
         challengee_id = opponent.id
 
         await cf_common.resolve_handles(ctx, self.converter, ('!' + str(ctx.author), '!' + str(opponent)))
         
         if cf_common.user_db.check_duel_challenge(challenger_id):
-            raise DuelCogError(f'{ctx.author.mention}, أنت بالفعل في مبارزة حالياً!')
+            raise DuelCogError(f'{ctx.author.mention}, you are already in a duel!')
         if cf_common.user_db.check_duel_challenge(challengee_id):
-             raise DuelCogError(f'**{opponent.display_name}** في مبارزة حالياً!')
+             raise DuelCogError(f'**{opponent.display_name}** is already in a duel!')
 
         userids = [challenger_id, challengee_id]
         handles = [cf_common.user_db.get_handle(uid, ctx.guild.id) for uid in userids]
@@ -112,7 +112,7 @@ class Dueling(commands.Cog):
         
         problems_to_use = problems_to_use[:num_probs]
         if len(problems_to_use) < num_probs:
-            raise DuelCogError("لم يتم العثور على مسائل كافية في هذا النطاق.")
+            raise DuelCogError("Could not find enough problems in this range.")
 
         problem_names = ",".join([p.name for p in problems_to_use])
         issue_time = datetime.datetime.now().timestamp()
@@ -125,17 +125,17 @@ class Dueling(commands.Cog):
         )
         cf_common.user_db.conn.commit()
 
-        await ctx.send(f'{ctx.author.mention} تحدى {opponent.mention} في مبارزة من {num_probs} مسائل! (التقييم: {rating})')
+        await ctx.send(f'{ctx.author.mention} challenged {opponent.mention} to a duel of {num_probs} problems! (Rating: {rating})')
         
         await asyncio.sleep(_DUEL_EXPIRY_TIME)
         if cf_common.user_db.cancel_duel(duel_id, Duel.EXPIRED):
-            await ctx.send(f'انتهى وقت طلب التحدي لـ **{opponent.display_name}**.')
+            await ctx.send(f'Challenge request for **{opponent.display_name}** has expired.')
 
     @duel.command(brief='Accept a duel')
     async def accept(self, ctx):
-        """قبول تحدي مبارزة مقدم إليك."""
+        """Accept a pending duel challenge."""
         active = cf_common.user_db.check_duel_accept(ctx.author.id)
-        if not active: raise DuelCogError("لا يوجد تحدي معلق بانتظارك.")
+        if not active: raise DuelCogError("No pending challenge found.")
         
         duel_id, challenger_id, _ = active
         adv = self._get_advanced_data(duel_id)
@@ -144,16 +144,16 @@ class Dueling(commands.Cog):
         cf_common.user_db.start_duel(duel_id, start_time)
         
         challenger = ctx.guild.get_member(challenger_id)
-        embed = discord_common.embed_success(f"⚔️ بدأت المبارزة: {challenger.mention} ضد {ctx.author.mention}")
-        embed.add_field(name="المسائل المطلوب حلها", value="\n".join([f"• {name}" for name in adv.problem_names.split(",")]), inline=False)
-        embed.set_footer(text="اكتب ;duel complete عندما ينتهي الطرفان من الحل.")
+        embed = discord_common.embed_success(f"⚔️ Duel Started: {challenger.mention} vs {ctx.author.mention}")
+        embed.add_field(name="Problems", value="\n".join([f"• {name}" for name in adv.problem_names.split(",")]), inline=False)
+        embed.set_footer(text="Type ;duel complete when finished.")
         await ctx.send(embed=embed)
 
     @duel.command(brief='Mark your side as complete')
     async def complete(self, ctx):
-        """إخطار البوت بأنك انتهيت. تنتهي المبارزة عندما يكتب الطرفان هذا الأمر."""
+        """Mark yourself as finished. Duel ends when both sides complete."""
         active = cf_common.user_db.check_duel_complete(ctx.author.id)
-        if not active: raise DuelCogError("أنت لست في مبارزة جارية حالياً.")
+        if not active: raise DuelCogError("You are not currently in an active duel.")
         
         duel_id, challenger_id, challengee_id, start_time, _, _, _, _ = active
         
@@ -162,10 +162,10 @@ class Dueling(commands.Cog):
         
         adv = self._get_advanced_data(duel_id)
         if not (adv.challenger_completed and adv.challengee_completed):
-            await ctx.send(f"✅ {ctx.author.mention}, تم تسجيل انتهائك. بانتظار الخصم...")
+            await ctx.send(f"✅ {ctx.author.mention}, you have finished. Waiting for opponent...")
             return
 
-        await ctx.send("🔄 انتهى الطرفان. جاري جلب الحلول وحساب النقاط...")
+        await ctx.send("🔄 Both sides finished. Calculating scores...")
         
         prob_names = adv.problem_names.split(",")
         handle_challenger = cf_common.user_db.get_handle(challenger_id, ctx.guild.id)
@@ -221,21 +221,21 @@ class Dueling(commands.Cog):
             )
             cf_common.user_db.conn.commit()
             
-            embed = discord_common.embed_success(f"🏆 **{winner.display_name}** فاز بالمبارزة!")
-            embed.add_field(name="النتائج النهائية", value=f"{challenger.display_name}: **{score_a}**\n{challengee.display_name}: **{score_b}**")
-            embed.add_field(name="تأثير النقاط", value=f"**{winner.display_name}**: +{win_score}\n**{loser.display_name}**: -{diff}")
+            embed = discord_common.embed_success(f"🏆 **{winner.display_name}** won the duel!")
+            embed.add_field(name="Final Results", value=f"{challenger.display_name}: **{score_a}**\n{challengee.display_name}: **{score_b}**")
+            embed.add_field(name="Points Impact", value=f"**{winner.display_name}**: +{win_score}\n**{loser.display_name}**: -{diff}")
         else:
-            embed = discord_common.embed_success(f"🤝 انتهت المبارزة بالتعادل!")
-            embed.add_field(name="النتائج النهائية", value=f"كلا اللاعبين: **{score_a}**")
+            embed = discord_common.embed_success(f"🤝 The duel ended in a Draw!")
+            embed.add_field(name="Final Results", value=f"Both Players: **{score_a}**")
             if score_a > 0:
                 cf_common.user_db.conn.execute(
                     "UPDATE gamification_points SET current_month_points = current_month_points + ? WHERE (user_id = ? OR user_id = ?) AND guild_id = ?",
                     (score_a, str(challenger_id), str(challengee_id), str(ctx.guild.id))
                 )
                 cf_common.user_db.conn.commit()
-                embed.add_field(name="تأثير النقاط", value=f"كلا اللاعبين: +{score_a}")
+                embed.add_field(name="Points Impact", value=f"Both Players: +{score_a}")
             else:
-                embed.add_field(name="تأثير النقاط", value="لم يتم منح نقاط (لم يتم حل أي مسألة)")
+                embed.add_field(name="Points Impact", value="No points awarded (No problems solved)")
         
         await ctx.send(embed=embed)
 
@@ -280,21 +280,21 @@ class Dueling(commands.Cog):
 
     @duel.command(brief='Withdraw, Decline or Give Up')
     async def cancel(self, ctx):
-        """إلغاء تحدي معلق أو الانسحاب من مبارزة جارية."""
+        """Cancel a pending challenge or withdraw from an ongoing duel."""
         res_w = cf_common.user_db.check_duel_withdraw(ctx.author.id)
         res_d = cf_common.user_db.check_duel_decline(ctx.author.id)
         ongoing = cf_common.user_db.check_duel_complete(ctx.author.id)
         
         if res_w:
             cf_common.user_db.cancel_duel(res_w[0], Duel.WITHDRAWN)
-            await ctx.send("تم سحب التحدي.")
+            await ctx.send("Challenge withdrawn.")
         elif res_d:
             cf_common.user_db.cancel_duel(res_d[0], Duel.DECLINED)
-            await ctx.send("تم رفض التحدي.")
+            await ctx.send("Challenge declined.")
         elif ongoing:
-            await ctx.send(f"{ctx.author.mention}, إذا كنت ترغب في إنهاء المبارزة، يرجى كتابة `;duel complete`. ستحصل على نقاط المسائل التي حللتها فقط.")
+            await ctx.send(f"{ctx.author.mention}, if you wish to finish the duel early, please type `;duel complete`. You will only get points for problems currently solved.")
         else:
-            raise DuelCogError("لا يوجد مبارزة جارية أو تحدي معلق.")
+            raise DuelCogError("No active duel or pending challenge.")
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):

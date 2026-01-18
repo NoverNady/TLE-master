@@ -101,10 +101,11 @@ class Scoring(commands.Cog):
     @tasks.loop(time=datetime.time(hour=10, minute=0, tzinfo=pytz.UTC)) # 12:00 PM Cairo
     async def monthly_reset(self):
         """Reset all users to 1500 points on the 1st of every month"""
-        if datetime.datetime.now(pytz.UTC).day != 1:
+        now = datetime.datetime.now(pytz.UTC)
+        if now.day != 1:
             return
         
-        self.logger.info("Performing monthly points reset...")
+        self.logger.info(f"Performing monthly points reset for {now.strftime('%B %Y')}...")
         try:
             cf_common.user_db.conn.execute("UPDATE gamification_points SET current_month_points = 1500")
             cf_common.user_db.conn.commit()
@@ -112,24 +113,24 @@ class Scoring(commands.Cog):
             for guild in self.bot.guilds:
                 query = "SELECT channel_id FROM automation_settings_v2 WHERE guild_id = ? AND setting_type = 'master'"
                 res = cf_common.user_db._fetchone(query, (str(guild.id),))
-                if res:
+                if res and res.channel_id:
                     channel = guild.get_channel(int(res.channel_id))
                     if channel:
-                        embed = discord_common.embed_alert("🌙 **الشهر الجديد قد بدأ!**\\nتم تصفير جميع النقاط إلى **1500**. بالتوفيق للجميع!")
+                        embed = discord_common.embed_alert("🌙 **New Month Has Started!**\nAll points have been reset to **1500**. Good luck to everyone!")
                         await channel.send(embed=embed)
         except Exception as e:
             self.logger.error(f"Error during monthly reset: {e}")
 
     @commands.command(brief='Check your current gamification points')
     async def points(self, ctx, member: discord.Member = None):
-        """عرض إجمالي نقاطك لهذا الشهر."""
+        """Show your total points for this month."""
         member = member or ctx.author
         query = "SELECT current_month_points FROM gamification_points WHERE user_id = ? AND guild_id = ?"
         res = cf_common.user_db._fetchone(query, (str(member.id), str(ctx.guild.id)))
         
         pts = res.current_month_points if res else 1500
         
-        embed = discord_common.embed_success(f"رصيد **{member.display_name}** هو **{pts}** نقطة لهذا الشهر!")
+        embed = discord_common.embed_success(f"**{member.display_name}** has **{pts}** points this month!")
         if member.avatar: embed.set_thumbnail(url=member.avatar.url)
         await ctx.send(embed=embed)
 
@@ -137,6 +138,9 @@ class Scoring(commands.Cog):
     @monthly_reset.before_loop
     async def before_tasks(self):
         await self.bot.wait_until_ready()
+
+    async def cog_command_error(self, ctx, error):
+        self.logger.error(f'Scoring cog error: {error}')
 
 async def setup(bot):
     await bot.add_cog(Scoring(bot))

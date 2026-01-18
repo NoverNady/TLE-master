@@ -22,6 +22,10 @@ if STORAGE_BUCKET!='None':
     })
     bucket = storage.bucket()
 
+
+# Set backend to Agg before importing pyplot or seaborn to avoid crashes on headless servers
+import matplotlib
+matplotlib.use('Agg')
 import seaborn as sns
 from discord.ext import commands
 from matplotlib import pyplot as plt

@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تقرير فحص البوت (TLE Audit Report)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #202225;
+            --bg-card: #2f3136;
+            --text-primary: #dcddde;
+            --text-secondary: #b9bbbe;
+            --accent: #5865f2;
+            --critical: #ed4245;
+            --warning: #fee75c;
+            --info: #00b0f4;
+            --success: #57f287;
+            --border: #40444b;
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 20px;
+            background: var(--bg-card);
+            border-radius: 8px;
+            border-bottom: 4px solid var(--accent);
+        }
+
+        h1,
+        h2,
+        h3 {
+            color: #fff;
+            margin-top: 0;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: var(--bg-card);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .score-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: conic-gradient(var(--success) 80%, var(--bg-dark) 0);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5em;
+            font-weight: bold;
+            margin: 0 auto 20px;
+            position: relative;
+        }
+
+        .score-circle::after {
+            content: '';
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background: var(--bg-card);
+            border-radius: 50%;
+        }
+
+        .score-text {
+            position: relative;
+            z-index: 1;
+            color: var(--success);
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        th,
+        td {
+            text-align: right;
+            padding: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            background-color: rgba(0, 0, 0, 0.2);
+            color: var(--text-secondary);
+        }
+
+        .tag {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.85em;
+            font-weight: bold;
+        }
+
+        .tag-critical {
+            background: rgba(237, 66, 69, 0.2);
+            color: var(--critical);
+        }
+
+        .tag-warning {
+            background: rgba(254, 231, 92, 0.2);
+            color: var(--warning);
+        }
+
+        .tag-info {
+            background: rgba(0, 176, 244, 0.2);
+            color: var(--info);
+        }
+
+        .feature-group {
+            margin-bottom: 30px;
+        }
+
+        .feature-list {
+            display: grid;
+            gap: 10px;
+        }
+
+        .feature-item {
+            background: rgba(0, 0, 0, 0.1);
+            padding: 10px;
+            border-radius: 4px;
+            border-left: 3px solid var(--accent);
+        }
+
+        .command-code {
+            font-family: monospace;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 2px 6px;
+            border-radius: 3px;
+            color: var(--accent);
+        }
+
+        .file-tree {
+            list-style: none;
+            padding: 0;
+        }
+
+        .file-tree li {
+            padding: 8px 0;
+            border-bottom: 1px dashed var(--border);
+        }
+
+        .file-desc {
+            color: var(--text-secondary);
+            font-size: 0.9em;
+            margin-right: 10px;
+        }
+
+        /* Database Tables Badge */
+        .db-badge {
+            display: inline-block;
+            background: #202225;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            margin: 2px;
+            border: 1px solid var(--border);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <header>
+            <h1>💎 تقرير فحص الكود البرمجي (Codebase Audit)</h1>
+            <p>مشروع TLE-master | تاريخ التقرير: 17 يناير 2026</p>
+        </header>
+
+        <!-- Executive Summary -->
+        <div class="dashboard-grid">
+            <div class="card" style="text-align: center;">
+                <h3>حالة النظام (Health Score)</h3>
+                <div class="score-circle">
+                    <span class="score-text">80%</span>
+                </div>
+                <p style="color: var(--text-secondary);">النظام يعمل بشكل جيد ولكن يحتاج لإصلاحات في التهيئة.</p>
+            </div>
+
+            <div class="card">
+                <h3>📊 إحصائيات سريعة</h3>
+                <div class="stat-item">
+                    <span>عدد ملفات البايثون (Cogs)</span>
+                    <strong>16 ملف</strong>
+                </div>
+                <div class="stat-item">
+                    <span>الرزمة الرئيسية</span>
+                    <strong>discord.py 2.0+</strong>
+                </div>
+                <div class="stat-item">
+                    <span>حالة قاعدة البيانات</span>
+                    <span class="tag tag-success" style="color:var(--success)">متصل (SQLite)</span>
+                </div>
+                <div class="stat-item">
+                    <span>نظام التلعيب (Gamification)</span>
+                    <span class="tag tag-info">نشط</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>🗄️ جداول قاعدة البيانات المكتشفة</h3>
+                <div style="display: flex; flex-wrap: wrap;">
+                    <span class="db-badge">user_handle</span>
+                    <span class="db-badge">gamification_points</span>
+                    <span class="db-badge">duel</span>
+                    <span class="db-badge">advanced_duel_data</span>
+                    <span class="db-badge">challenge</span>
+                    <span class="db-badge">automation_settings_v2</span>
+                    <span class="db-badge">starboard</span>
+                    <span class="db-badge">rated_vcs</span>
+                    <span class="db-badge">internal_points</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Issues Section -->
+        <section class="card" style="margin-bottom: 40px;">
+            <h2>🐞 المشاكل والتحسينات (Issues & Improvements)</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th width="10%">الأهمية</th>
+                        <th width="20%">الملف</th>
+                        <th width="40%">وصف المشكلة</th>
+                        <th width="30%">الحل المقترح</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="tag tag-critical">حرج</span></td>
+                        <td><code>__main__.py</code></td>
+                        <td>عدم ضبط Matplotlib Backend إلى 'Agg'. هذا سيسبب توقف البوت عند محاولة الرسم على سيرفر لا
+                            يحتوي على واجهة رسومية.</td>
+                        <td>إضافة <code>matplotlib.use('Agg')</code> قبل استيراد <code>pyplot</code>.</td>
+                    </tr>
+                    <tr>
+                        <td><span class="tag tag-warning">تحذير</span></td>
+                        <td><code>tle/util/codeforces_common.py</code></td>
+                        <td>استخدام مكثف للمتغيرات العامة (Global Variables) للكاش، مما قد يسبب مشاكل عند إعادة الاتصال.
+                        </td>
+                        <td>تغليف المنطق داخل كلاس أو استخدام Dependency Injection بشكل أفضل.</td>
+                    </tr>
+                    <tr>
+                        <td><span class="tag tag-info">تحسين</span></td>
+                        <td><code>cogs/duel.py</code> & <code>codeforces.py</code></td>
+                        <td>تكرار تعريف الألوان والرتب في ملفات متعددة (Duplicated Constants).</td>
+                        <td>توحيد الثوابت في ملف <code>constants.py</code> لسهولة الصيانة.</td>
+                    </tr>
+                    <tr>
+                        <td><span class="tag tag-info">تحسين</span></td>
+                        <td><code>cogs/scoring.py</code></td>
+                        <td>منطق إعادة التعيين الشهري يعمل لكنه يعتمد على فحص الوقت داخل Loop.</td>
+                        <td>استخدام <code>cron-like trigger</code> في مكتبة <code>discord.ext.tasks</code> إذا توفرت
+                            لضمان الدقة.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Feature Catalog -->
+        <section class="card" style="margin-bottom: 40px;">
+            <h2>✨ كتالوج المميزات (Feature Catalog)</h2>
+
+            <div class="dashboard-grid">
+                <div class="feature-group">
+                    <h3>🎮 التلعيب (Gamification)</h3>
+                    <div class="feature-list">
+                        <div class="feature-item">
+                            <span class="command-code">;duel challenge @user</span> - تحدي عضو آخر في مبارزة برمجية.
+                        </div>
+                        <div class="feature-item">
+                            <span class="command-code">;duel accept</span> - قبول التحدي الوارد.
+                        </div>
+                        <div class="feature-item">
+                            <span class="command-code">;duel complete</span> - إعلان الانتهاء من الحل واحتساب النقاط.
+                        </div>
+                        <div class="feature-item">
+                            <span class="command-code">;points</span> - عرض نقاط العضو للشهر الحالي (تتصفر شهرياً).
+                        </div>
+                    </div>
+                </div>
+
+                <div class="feature-group">
+                    <h3>🤖 الأتمتة (Automation)</h3>
+                    <div class="feature-list">
+                        <div class="feature-item">
+                            <span class="command-code">;weekly_standings @role</span> - جدولة نشر ترتيب أسبوعي لرتبة
+                            محددة.
+                        </div>
+                        <div class="feature-item">
+                            <span class="command-code">;master_channel</span> - تعيين القناة الحالية كقناة الإشعارات
+                            الرسمية.
+                        </div>
+                        <div class="feature-item">
+                            <span class="command-code">Rank Monitor</span> - نظام خلفي يتابع تقييمات الأعضاء ويحدث رتبهم
+                            (Roles) تلقائياً.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="feature-group">
+                    <h3>🛠️ الأدوات الأساسية (Core Tools)</h3>
+                    <div class="feature-list">
+                        <div class="feature-item">
+                            <span class="command-code">;handle set [handle]</span> - ربط حساب ديسكورد بحساب كودفورسز.
+                        </div>
+                        <div class="feature-item">
+                            <span class="command-code">;plot rating [handle]</span> - رسم بياني لتقييم المستخدم مع مرور
+                            الوقت.
+                        </div>
+                        <div class="feature-item">
+                            <span class="command-code">;gitgud [delta]</span> - اقتراح مسألة للتدريب بناءً على مستوى
+                            المستخدم.
+                        </div>
+                        <div class="feature-item">
+                            <span class="command-code">;vc [contest_id]</span> - اقتراح مسابقة افتراضية (Virtual
+                            Contest).
+                        </div>
+                    </div>
+                </div>
+
+                <div class="feature-group">
+                    <h3>⚙️ الإدارة (Admin)</h3>
+                    <div class="feature-list">
+                        <div class="feature-item">
+                            <span class="command-code">;init_roles</span> - إنشاء الهيكل الكامل للرتب (G1-G20, Admin)
+                            تلقائياً.
+                        </div>
+                        <div class="feature-item">
+                            <span class="command-code">;help_arabic</span> - عرض رابط لملف التوثيق العربي الشامل.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- File Structure -->
+        <section class="card">
+            <h2>🛠️ هيكل المشروع (File Structure)</h2>
+            <ul class="file-tree">
+                <li><strong>tle/</strong> <span class="file-desc">المجلد الرئيسي للبوت</span></li>
+                <li><strong>├── __main__.py</strong> <span class="file-desc">نقطة الدخول، تهيئة البوت، الاتصال بقاعدة
+                        البيانات.</span></li>
+                <li><strong>├── cogs/</strong> <span class="file-desc">مجلد الوحدات الوظيفية (Extensions)</span></li>
+                <li>&nbsp;&nbsp;&nbsp;&nbsp;├── <strong>duel.py</strong> <span class="file-desc">نظام المبارزات، حساب
+                        الفائز، وتوزيع النقاط.</span></li>
+                <li>&nbsp;&nbsp;&nbsp;&nbsp;├── <strong>scoring.py</strong> <span class="file-desc">إدارة نقاط التلعيب،
+                        التصفير الشهري، وأمر ;points.</span></li>
+                <li>&nbsp;&nbsp;&nbsp;&nbsp;├── <strong>automation.py</strong> <span class="file-desc">المهام المجدولة،
+                        الترتيب الأسبوعي، ومراقبة الرتب.</span></li>
+                <li>&nbsp;&nbsp;&nbsp;&nbsp;├── <strong>codeforces.py</strong> <span class="file-desc">أوامر التدريب
+                        (gitgud)، التحديات اليومية، والمزج (mashup).</span></li>
+                <li>&nbsp;&nbsp;&nbsp;&nbsp;├── <strong>contests.py</strong> <span class="file-desc">عرض قوائم المسابقات
+                        القادمة، والمنتهية، والتصنيفات (Ranklists).</span></li>
+                <li>&nbsp;&nbsp;&nbsp;&nbsp;├── <strong>admin_tools.py</strong> <span class="file-desc">أمر ;init_roles
+                        لإنشاء الرتب وإدارتها.</span></li>
+                <li>&nbsp;&nbsp;&nbsp;&nbsp;├── <strong>handles.py</strong> <span class="file-desc">إدارة ربط الحسابات،
+                        التحقق من الهوية، وتحديث المعلومات.</span></li>
+                <li>&nbsp;&nbsp;&nbsp;&nbsp;├── <strong>graphs.py</strong> <span class="file-desc">توليد الرسوم البيانية
+                        باستخدام Matplotlib.</span></li>
+                <li>&nbsp;&nbsp;&nbsp;&nbsp;├── <strong>meta.py</strong> <span class="file-desc">أوامر النظام (uptime,
+                        ping, help_arabic).</span></li>
+                <li>&nbsp;&nbsp;&nbsp;&nbsp;└── <strong>util/</strong> <span class="file-desc">مجلد الأدوات المساعدة
+                        (قاعدة البيانات، دوال الرسم، والاتصال بالـ API).</span></li>
+            </ul>
+        </section>
+
+        <footer style="text-align: center; margin-top: 40px; color: var(--text-secondary); font-size: 0.9em;">
+            Generated by Antigravity TLE Auditor Integration
+        </footer>
+    </div>
+
+</body>
+
+</html>
